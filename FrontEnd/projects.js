@@ -47,7 +47,8 @@ function createGallery(categories, projectDB) {
 		//création du bouton
 		const btnCategory = document.createElement("button")
 		btnCategory.type = "button"
-		btnCategory.innerText = nameCat
+		btnCategory.innerText =
+			nameCat === "Hotels & restaurants" ? "Hôtels & restaurants" : nameCat
 		btnCategory.setAttribute("class", "btn-filters")
 		btnCategory.addEventListener("click", () => {
 			console.log("You clicked the button!")
