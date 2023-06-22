@@ -14,28 +14,33 @@ async function fetchData(datas) {
 }
 
 // 👇 Fct pour créer un bouton (filtres)
-function createCategoriesBtn(categories, projectDB) {
+function createGallery(categories, projectDB) {
 	const cat = ["Tous", ...categories] //nvx tableau avec l'ajout du bouton "Tous"
 
-	//association des éléments enfants aux éléments parent du DOM
+	//association + création des éléments globaux du DOM
 	const galleryContainer = document.querySelector(".gallery")
-	const filters = document.createElement("filters")
+	const filters = document.createElement("div")
+	filters.setAttribute("class", "filters") //ajoute une class à la div "filters"
 	const figure = document.createElement("figure")
+	figure.setAttribute("class", "figure")
 
 	galleryContainer.appendChild(filters)
+	galleryContainer.appendChild(figure)
 
 	projectDB.forEach((project) => {
 		//création des éléments du DOM avec les datas reçues
+		const projectContainer = document.createElement("div")
+		projectContainer.setAttribute("class", "project-container")
 		const picture = document.createElement("img")
 		picture.setAttribute("src", project.imageUrl)
 		picture.setAttribute("alt", project.alt)
 		const subtitle = document.createElement("figcaption")
 		subtitle.textContent = project.title
 
-		//association des éléments enfants aux éléments parent du DOM
-		galleryContainer.appendChild(figure)
-		figure.appendChild(picture)
-		figure.appendChild(subtitle)
+		//association des éléments enfants aux éléments parents du DOM
+		figure.appendChild(projectContainer)
+		projectContainer.appendChild(picture)
+		projectContainer.appendChild(subtitle)
 	})
 
 	cat.forEach((nameCat) => {
@@ -43,9 +48,9 @@ function createCategoriesBtn(categories, projectDB) {
 		const btnCategory = document.createElement("button")
 		btnCategory.type = "button"
 		btnCategory.innerText = nameCat
-		btnCategory.classList.add = "btn-filters"
+		btnCategory.setAttribute("class", "btn-filters")
 		btnCategory.addEventListener("click", () => {
-			alert("You clicked the button!")
+			console.log("You clicked the button!")
 		})
 		//association des btns à la div "filters"
 		filters.appendChild(btnCategory)
@@ -53,7 +58,7 @@ function createCategoriesBtn(categories, projectDB) {
 
 	console.log(filters)
 
-	return createCategoriesBtn
+	return createGallery
 }
 
 // 👇 Fct pour créer un projet (DOM)
@@ -83,7 +88,7 @@ async function displayProjects() {
 	const categories = await fetchData(getCategories())
 
 	// await createProject(projects)
-	await createCategoriesBtn(categories, projects)
+	await createGallery(categories, projects)
 }
 
 displayProjects() //appel de la fct
