@@ -13,24 +13,28 @@ async function fetchData(datas) {
 	}
 }
 
-// 👇 Fct pour créer un bouton (filtres)
-function createGallery(categories, projectDB) {
-	const cat = ["Tous", ...categories] //nvx tableau avec l'ajout du bouton "Tous"
+// 👇 Fct pour générer la gallerie
+function createGallery(categoriesDB, projectDB) {
+	const cat = ["Tous", ...categoriesDB] //nvx tableau avec l'ajout du bouton "Tous"
 
 	//association + création des éléments globaux du DOM
 	const galleryContainer = document.querySelector(".gallery")
 	const filters = document.createElement("div")
-	filters.setAttribute("class", "filters") //ajoute une class à la div "filters"
+	filters.className = "filters" //ajoute une classe à la div "filters"
 	const figure = document.createElement("figure")
-	figure.setAttribute("class", "figure")
+	figure.className = "figure"
 
 	galleryContainer.appendChild(filters)
 	galleryContainer.appendChild(figure)
 
+	// 👇 Création des projets
+	const projectsDiv = [] //tableau pour stocker les div de chaque projet
+
 	projectDB.forEach((project) => {
-		//création des éléments du DOM avec les datas reçues
+		//création des éléments (DOM) avec les datas reçues
 		const projectContainer = document.createElement("div")
-		projectContainer.setAttribute("class", "project-container")
+		projectContainer.className = "project-container"
+		projectContainer.dataset.category = project.category.name //stock dans l'attribut data la catégorie du projet
 		const picture = document.createElement("img")
 		picture.setAttribute("src", project.imageUrl)
 		picture.setAttribute("alt", project.alt)
@@ -38,57 +42,54 @@ function createGallery(categories, projectDB) {
 		subtitle.textContent = project.title
 
 		//association des éléments enfants aux éléments parents du DOM
-		figure.appendChild(projectContainer)
 		projectContainer.appendChild(picture)
 		projectContainer.appendChild(subtitle)
+		figure.appendChild(projectContainer)
+
+		projectsDiv.push(projectContainer) //ajoute le projet au tableau "projectsDiv"
 	})
 
+	// 👇 Création des boutons
 	cat.forEach((nameCat) => {
-		//création du bouton
+		//création du btn (DOM)
 		const btnCategory = document.createElement("button")
 		btnCategory.type = "button"
 		btnCategory.innerText =
 			nameCat === "Hotels & restaurants" ? "Hôtels & restaurants" : nameCat
-		btnCategory.setAttribute("class", "btn-filters")
+		btnCategory.className = "btn-filters"
+
+		// 👇 Création du filtre au clic en fonction des catégories
 		btnCategory.addEventListener("click", () => {
-			console.log("You clicked the button!")
+			// Afficher tous les projets si le bouton "Tous" est cliqué
+			if (nameCat === "Tous") {
+				projectsDiv.forEach((el) => {
+					el.style.display = "block"
+				})
+			} else {
+				// Filtrer les projets par catégorie
+				projectsDiv.forEach((el) => {
+					const projectCatName = el.dataset.category
+
+					if (nameCat !== projectCatName) {
+						el.style.display = "none"
+					} else {
+						el.style.display = "block"
+					}
+				})
+			}
 		})
-		//association des btns à la div "filters"
-		filters.appendChild(btnCategory)
+
+		filters.appendChild(btnCategory) //association des btns à la div "filters"
 	})
 
-	console.log(filters)
-
-	return createGallery
+	return galleryContainer //retourne le contenu de la gallerie
 }
 
-// 👇 Fct pour créer un projet (DOM)
-// function createProject(projectDB) {
-// 	projectDB.forEach((project) => {
-// 		//création des éléments du DOM avec les datas reçues
-// 		const galleryContainer = document.querySelector(".gallery")
-// 		const figure = document.createElement("figure")
-// 		const picture = document.createElement("img")
-// 		picture.setAttribute("src", project.imageUrl)
-// 		picture.setAttribute("alt", project.alt)
-// 		const subtitle = document.createElement("figcaption")
-// 		subtitle.textContent = project.title
-
-// 		//association des éléments enfants aux éléments parent du DOM
-// 		galleryContainer.appendChild(figure)
-// 		figure.appendChild(picture)
-// 		figure.appendChild(subtitle)
-// 	})
-
-// 	return createProject
-// }
-
-// 👇 Fct pour créer les projets et les boutons(filtre) avec les datas reçues
+// 👇 Fct pour créer les projets et les boutons (filtre) avec les datas reçues
 async function displayProjects() {
 	const projects = await fetchData(getProjects())
 	const categories = await fetchData(getCategories())
 
-	// await createProject(projects)
 	await createGallery(categories, projects)
 }
 

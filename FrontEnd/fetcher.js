@@ -6,6 +6,12 @@ export async function getProjects() {
 	return projects
 }
 
+fetch("http://localhost:5678/api/works")
+	.then((resp) => resp.json())
+	.catch(function (error) {
+		console.log(error)
+	})
+
 // 👇 Fct pour appeler les catégories
 export async function getCategories() {
 	const rawResp = await fetch("http://localhost:5678/api/categories")
@@ -15,3 +21,5 @@ export async function getCategories() {
 
 	return categories
 }
+
+//TO DO >> pbm technique si API coupé côté fetch + aucun projet si datas vide
