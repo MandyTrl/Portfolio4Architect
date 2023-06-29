@@ -6,11 +6,40 @@ async function fetchData(datas) {
 		const response = await datas //récupération des datas
 		return response
 	} catch (error) {
-		console.error(
-			"Une erreur s'est produite lors de la récupération des données : ",
-			error
-		)
+		return errorMsg(error)
 	}
+}
+
+// 👇 Fct pour déterminer le type d'erreur
+function errorMsg(error) {
+	let errorMSG = ""
+	if (error.message === "No data found") {
+		errorMSG = "Oops.. Aucun projet trouvé"
+	} else if (error.message === "Error connecting to database") {
+		errorMSG = "Oops.. Une erreur technique est survenue"
+	} else console.log("Error message:", error.message)
+
+	return createErrorMsg(errorMSG)
+}
+
+// 👇 Fct pour créer le message d'erreur côté front/client
+function createErrorMsg(err) {
+	const galleryContainer = document.querySelector(".gallery")
+	const existingErrorMsg = galleryContainer.querySelector(".error-message")
+
+	if (existingErrorMsg) {
+		if (existingErrorMsg.innerText === err) {
+			//si un msg d'erreur identique existe déjà -> on n'en créé pas de nvx
+			return galleryContainer
+		}
+	}
+
+	const errorDiv = document.createElement("div")
+	errorDiv.innerText = err
+	errorDiv.className = "error-message"
+	galleryContainer.appendChild(errorDiv)
+
+	return galleryContainer
 }
 
 // 👇 Fct pour générer la gallerie
@@ -78,7 +107,6 @@ function createGallery(categoriesDB, projectDB) {
 				})
 			}
 		})
-
 		filters.appendChild(btnCategory) //association des btns à la div "filters"
 	})
 

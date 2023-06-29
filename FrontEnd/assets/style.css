@@ -223,6 +223,14 @@ button {
 	flex-direction: column;
 }
 
+.error-message {
+	text-align: center;
+	font-style: italic;
+	font-size: 30px;
+	color: #4a504f;
+	padding: 30px 0;
+}
+
 .filters {
 	display: flex;
 	justify-content: center;
