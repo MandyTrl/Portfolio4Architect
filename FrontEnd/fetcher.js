@@ -1,10 +1,9 @@
-const projectsUrl = "http://localhost:5678/api/works"
-const categoriesUrl = "http://localhost:5678/api/categories"
+import { projectsApiUrl, categoriesApiUrl } from "./links.js"
 
-// 👇 Fct pour appeler les projets
+// Fct pour appeler les projets
 export async function getProjects() {
 	try {
-		const rawResp = await fetch(projectsUrl)
+		const rawResp = await fetch(projectsApiUrl)
 		if (!rawResp.ok) {
 			throw new Error("Failed to fetch projects")
 		} //check si le statut de la rep est successed
@@ -21,10 +20,10 @@ export async function getProjects() {
 	}
 }
 
-// 👇 Fct pour appeler les catégories
+// Fct pour appeler les catégories
 export async function getCategories() {
 	try {
-		const rawResp = await fetch(categoriesUrl)
+		const rawResp = await fetch(categoriesApiUrl)
 		if (!rawResp.ok) {
 			throw new Error("Failed to fetch categories")
 		}

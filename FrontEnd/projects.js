@@ -1,6 +1,6 @@
 import { getProjects, getCategories } from "./fetcher.js"
 
-// 👇 Fct générale pour exploiter les datas
+// Fct générale pour exploiter les datas
 async function fetchData(datas) {
 	try {
 		const response = await datas //récupération des datas
@@ -10,7 +10,7 @@ async function fetchData(datas) {
 	}
 }
 
-// 👇 Fct pour déterminer le type d'erreur
+// Fct pour déterminer le type d'erreur
 function errorMsg(error) {
 	let errorMSG = ""
 	if (error.message === "No data found") {
@@ -22,7 +22,7 @@ function errorMsg(error) {
 	return createErrorMsg(errorMSG)
 }
 
-// 👇 Fct pour créer le message d'erreur côté front/client
+// Fct pour créer le message d'erreur côté front/client
 function createErrorMsg(err) {
 	const galleryContainer = document.querySelector(".gallery")
 	const existingErrorMsg = galleryContainer.querySelector(".error-message")
@@ -42,7 +42,7 @@ function createErrorMsg(err) {
 	return galleryContainer
 }
 
-// 👇 Fct pour générer la gallerie
+// Fct pour générer la gallerie
 function createGallery(categoriesDB, projectDB) {
 	const cat = ["Tous", ...categoriesDB] //nvx tableau avec l'ajout du bouton "Tous"
 
@@ -56,7 +56,7 @@ function createGallery(categoriesDB, projectDB) {
 	galleryContainer.appendChild(filters)
 	galleryContainer.appendChild(figure)
 
-	// 👇 Création des projets
+	// Création des projets
 	const projectsDiv = [] //tableau pour stocker les div de chaque projet
 
 	projectDB.forEach((project) => {
@@ -78,7 +78,7 @@ function createGallery(categoriesDB, projectDB) {
 		projectsDiv.push(projectContainer) //ajoute le projet au tableau "projectsDiv"
 	})
 
-	// 👇 Création des boutons
+	// Création des boutons
 	cat.forEach((nameCat) => {
 		//création du btn (DOM)
 		const btnCategory = document.createElement("button")
@@ -87,7 +87,7 @@ function createGallery(categoriesDB, projectDB) {
 			nameCat === "Hotels & restaurants" ? "Hôtels & restaurants" : nameCat
 		btnCategory.className = "btn-filters"
 
-		// 👇 Création du filtre au clic en fonction des catégories
+		// Création du filtre au clic en fonction des catégories
 		btnCategory.addEventListener("click", () => {
 			// Afficher tous les projets si le bouton "Tous" est cliqué
 			if (nameCat === "Tous") {
@@ -113,7 +113,7 @@ function createGallery(categoriesDB, projectDB) {
 	return galleryContainer //retourne le contenu de la gallerie
 }
 
-// 👇 Fct pour créer les projets et les boutons (filtre) avec les datas reçues
+// Fct pour créer les projets et les boutons (filtre) avec les datas reçues
 async function displayProjects() {
 	const projects = await fetchData(getProjects())
 	const categories = await fetchData(getCategories())
