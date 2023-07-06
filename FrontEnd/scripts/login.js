@@ -1,9 +1,13 @@
-import { homePageUrl, loginApiUrl } from "./links.js"
+import { homePageUrl, loginApiUrl, loginPageUrl } from "./links.js"
 
 const loginForm = document.getElementById("login-form") //récupération des éléments du DOM
 const alerteMSG = document.getElementById("alert-msg")
 const img = document.getElementById("alert-icon")
 
+const tabLogin = document.querySelector("nav ul li a:nth-child(3)")
+tabLogin.style.fontWeight = "!important bolder"
+
+// Gère l'envoi du formulaire de login
 loginForm.onsubmit = (e) => {
 	e.preventDefault() //empêche le chargement d'une nouvelle page par le navigateur
 	authentification() //appelle la fct d'authent
@@ -40,8 +44,9 @@ async function authentification() {
 		}
 
 		const user = await rawResp.json() //désérialisation
+		const token = user.token //récupération du token
 
-		return user
+		return token
 	} catch (error) {
 		console.log("Error message:", error.message)
 	}

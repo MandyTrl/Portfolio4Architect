@@ -103,6 +103,15 @@ section {
 	display: block;
 }
 
+/* Colors */
+::root {
+	--green: #1d6154;
+	--green-gray: #4a504f;
+	--brown: #b1663c;
+	--alert: #df2b28;
+	--box-shadow-color: rgba(0, 0, 0, 0.09);
+}
+
 /* General Styles */
 body {
 	max-width: 1140px;
@@ -129,7 +138,7 @@ h1 {
 	font-family: "Syne";
 	font-size: 22px;
 	font-weight: 800;
-	color: #b1663c;
+	color: var(--brown);
 }
 
 h1 > span {
@@ -142,7 +151,7 @@ h2 {
 	font-family: "Syne";
 	font-weight: 700;
 	font-size: 30px;
-	color: #1d6154;
+	color: var(--green);
 }
 
 nav ul {
@@ -157,11 +166,27 @@ nav li {
 }
 
 li:hover {
-	color: #b1663c;
+	color: var(--brown);
 }
 
 button {
 	font-family: "Syne";
+}
+
+/* Liens */
+a:link,
+a:visited {
+	text-decoration: none;
+}
+
+a:visited {
+	color: #000000;
+}
+
+a:hover,
+a:active {
+	color: var(--brown);
+	font-weight: 900;
 }
 
 /* Introduction Section */
@@ -211,7 +236,7 @@ button {
 	text-align: center;
 	font-style: italic;
 	font-size: 28px;
-	color: #4a504f;
+	color: var(--green-gray);
 	padding: 30px 0;
 }
 
@@ -221,9 +246,9 @@ button {
 }
 
 .btn-filters {
-	color: #1d6154;
+	color: var(--green);
 	background-color: transparent;
-	border: #1d6154 solid 1px;
+	border: var(--green) solid 1px;
 	border-radius: 60px;
 	width: auto;
 	min-width: 100px;
@@ -238,7 +263,7 @@ button {
 btn-filters:focus,
 btn-filters:active {
 	color: white;
-	background-color: #1d6154;
+	background-color: var(--green);
 	cursor: pointer;
 }
 
@@ -289,13 +314,13 @@ btn-filters:active {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	box-shadow: 0px 4px 14px var(--box-shadow-color);
 	padding-left: 8px;
 }
 
 #contact input:focus,
 #login input:focus {
-	outline: 1px solid #1d6154;
+	outline: 1px solid var(--green);
 }
 
 #contact label,
@@ -305,14 +330,14 @@ btn-filters:active {
 
 #contact textarea {
 	border: none;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	box-shadow: 0px 4px 14px var(--box-shadow-color);
 }
 
 input[type="submit"] {
 	font-family: "Syne";
 	font-weight: 700;
 	color: white;
-	background-color: #1d6154;
+	background-color: var(--green);
 	margin: 2em auto;
 	width: 180px;
 	text-align: center;
@@ -337,7 +362,7 @@ input[type="submit"] {
 
 #alert-msg {
 	padding-left: 8px;
-	color: #df2b28;
+	color: var(--alert);
 	font-weight: 700;
 }
 
