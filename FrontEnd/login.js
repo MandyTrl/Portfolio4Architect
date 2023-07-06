@@ -1,12 +1,12 @@
 import { loginPageUrl, homePageUrl, loginApiUrl } from "./links.js"
 
 const loginForm = document.getElementById("login-form") //récupération des éléments du DOM
-const submitBtn = document.getElementById("submit-button")
+const alerteMSG = document.getElementById("alert-msg")
 
-loginForm.addEventListener("submit", (e) => {
-	e.preventDefault() //empêche le chargement d'une nouvvelle page par le navigateur
+loginForm.onsubmit = (e) => {
+	e.preventDefault() //empêche le chargement d'une nouvelle page par le navigateur
 	authentification() //appelle la fct d'authent
-})
+}
 
 async function authentification() {
 	const userForm = JSON.stringify({
@@ -22,34 +22,18 @@ async function authentification() {
 			headers: { "Content-Type": "application/json" },
 			body: userForm,
 		})
-		console.log(rawResp.ok, rawResp.status, rawResp.statusText)
 
 		if (!rawResp.ok) {
-			throw new Error("Failed to fetch user")
-		}
-
-		window.location.href = homePageUrl
-
-		const user = await rawResp.json() //désérialisation
-
-		console.log(user)
-
-		if (!user) {
-			const alerteMSG = document.createElement("div")
-			alerteMSG.className = "alerte-msg"
 			alerteMSG.innerText = "Erreur dans l'identifiant ou le mot de passe"
-			loginForm.appendChild(alerteMSG)
+			throw new Error("Failed to fetch user")
 		} else {
 			window.location.href = homePageUrl
 		}
+
+		const user = await rawResp.json() //désérialisation
 
 		return user
 	} catch (error) {
 		console.log("Error message:", error.message)
 	}
 }
-
-//actionne la soumission du formulaire au click du bouton
-submitBtn.addEventListener("click", () => {
-	loginForm.submit()
-})
