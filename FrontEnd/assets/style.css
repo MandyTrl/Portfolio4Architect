@@ -104,7 +104,7 @@ section {
 }
 
 /* Colors */
-::root {
+:root {
 	--green: #1d6154;
 	--green-gray: #4a504f;
 	--brown: #b1663c;
@@ -342,6 +342,7 @@ input[type="submit"] {
 	width: 180px;
 	text-align: center;
 	border-radius: 60px;
+	cursor: pointer;
 }
 
 #login {
@@ -358,6 +359,7 @@ input[type="submit"] {
 	justify-content: center;
 	align-items: center;
 	padding: 40px 0;
+	margin-bottom: 335px;
 }
 
 #alert-msg {
