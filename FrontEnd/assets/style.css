@@ -1,8 +1,4 @@
-/* http://meyerweb.com/eric/tools/css/reset/
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
+/* Reset CSS */
 html,
 body,
 div,
@@ -91,6 +87,7 @@ video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -105,41 +102,23 @@ nav,
 section {
 	display: block;
 }
-body {
-	line-height: 1;
-	background-color: #fffef8;
-}
-ol,
-ul {
-	list-style: none;
-}
-blockquote,
-q {
-	quotes: none;
-}
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-	content: "";
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-/** end reset css**/
+
+/* General Styles */
 body {
 	max-width: 1140px;
 	margin: auto;
 	font-family: "Work Sans";
 	font-size: 14px;
+	line-height: 1;
+	background-color: #fffef8;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
 	margin: 50px 0;
 }
+
 section {
 	margin: 50px 0;
 }
@@ -165,11 +144,13 @@ h2 {
 	font-size: 30px;
 	color: #1d6154;
 }
+
 nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
 }
+
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
@@ -183,6 +164,7 @@ button {
 	font-family: "Syne";
 }
 
+/* Introduction Section */
 #introduction {
 	display: flex;
 	align-items: center;
@@ -213,6 +195,7 @@ button {
 	margin-bottom: 0.5em;
 }
 
+/* Portfolio Section */
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
@@ -250,6 +233,7 @@ button {
 	font-weight: bold;
 	transition: box-shadow 0.4s;
 }
+
 .btn-filters:hover,
 btn-filters:focus,
 btn-filters:active {
@@ -257,6 +241,7 @@ btn-filters:active {
 	background-color: #1d6154;
 	cursor: pointer;
 }
+
 .btn-filters:active {
 	box-shadow: inset -2px 0px 6px rgba(151, 168, 158, 0.464),
 		inset 2px 3px 3px rgba(28, 43, 36, 0.786);
@@ -269,23 +254,28 @@ btn-filters:active {
 	grid-column-gap: 18px;
 	grid-row-gap: 20px;
 }
+
 .figure img {
 	width: 100%;
 }
 
+/* Contact and Login Forms */
 #contact,
 #login {
 	width: 50%;
 	margin: auto;
 }
+
 #contact > *,
 #login > * {
 	text-align: center;
 }
+
 #contact h2,
 #login h2 {
 	margin-bottom: 20px;
 }
+
 #contact form,
 #login form {
 	text-align: left;
@@ -300,11 +290,19 @@ btn-filters:active {
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	padding-left: 8px;
 }
+
+#contact input:focus,
+#login input:focus {
+	outline: 1px solid #1d6154;
+}
+
 #contact label,
 #login label {
 	margin: 2em 0 1em 0;
 }
+
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -329,22 +327,41 @@ input[type="submit"] {
 	text-decoration: underline;
 }
 
-#alert-msg {
-	padding: 20px 40px;
-	color: #df2b28;
-	text-align: center;
+#msg-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	padding: 40px 0;
 }
 
+#alert-msg {
+	padding-left: 8px;
+	color: #df2b28;
+	font-weight: 700;
+}
+
+#alert-icon {
+	width: 24px;
+	display: none;
+}
+
+/* Footer */
 footer {
 	width: 100%;
 	height: 60px;
+	position: sticky;
+	bottom: 0;
+	left: 0;
 	background-color: #ffff;
 }
+
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
 	padding: 24px 92px;
 }
+
 footer ul li {
 	font-size: 14px;
 	font-weight: light;

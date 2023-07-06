@@ -1,7 +1,8 @@
-import { loginPageUrl, homePageUrl, loginApiUrl } from "./links.js"
+import { homePageUrl, loginApiUrl } from "./links.js"
 
 const loginForm = document.getElementById("login-form") //récupération des éléments du DOM
 const alerteMSG = document.getElementById("alert-msg")
+const img = document.getElementById("alert-icon")
 
 loginForm.onsubmit = (e) => {
 	e.preventDefault() //empêche le chargement d'une nouvelle page par le navigateur
@@ -14,8 +15,6 @@ async function authentification() {
 		password: password.value,
 	}) //sérialisation
 
-	console.log(userForm)
-
 	try {
 		const rawResp = await fetch(loginApiUrl, {
 			method: "POST",
@@ -25,9 +24,19 @@ async function authentification() {
 
 		if (!rawResp.ok) {
 			alerteMSG.innerText = "Erreur dans l'identifiant ou le mot de passe"
+			img.src = "./assets/icons/alert.png"
+			img.style.display = "block"
+
 			throw new Error("Failed to fetch user")
 		} else {
-			window.location.href = homePageUrl
+			alerteMSG.style.color = "#1d6154"
+			alerteMSG.innerText = "Bienvenue !"
+			img.src = "./assets/icons/welcome.png"
+			img.style.display = "block"
+
+			setTimeout(() => {
+				window.location.href = homePageUrl
+			}, 2500)
 		}
 
 		const user = await rawResp.json() //désérialisation
