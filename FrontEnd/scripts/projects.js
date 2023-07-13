@@ -1,7 +1,7 @@
 import { getProjects, getCategories } from "./fetcher.js"
 
 // Fct générale pour exploiter les datas
-async function fetchData(datas) {
+export async function fetchData(datas) {
 	try {
 		const response = await datas //récupération des datas
 		return response
@@ -120,7 +120,6 @@ async function displayProjects() {
 
 	await createGallery(categories, projects)
 }
-
 displayProjects() //appel de la fct
 
 // Récupération du token et affichage de l'edit bar

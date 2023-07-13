@@ -12,13 +12,14 @@
 		<link rel="shortcut icon" type="image/png" href="./assets/icons/favi.png" />
 		<meta name="description" content="" />
 		<script type="module" src="./scripts/projects.js"></script>
+		<script type="module" src="./scripts/edition.js"></script>
 		<link rel="stylesheet" href="./assets/style.css" />
 	</head>
 	<body>
 		<div id="edit-bar">
 			<div id="edit">
 				<img src="./assets/icons/edit.png" alt="edit-icone" id="edit-icone" />
-				<p>Mode édition</p>
+				<p><a href="#modal">Mode édition</a></p>
 			</div>
 
 			<button id="edit-btn">publier les changements</button>
@@ -39,7 +40,9 @@
 		<main>
 			<section id="introduction">
 				<figure>
-					<img src="./assets/images/sophie-bluel.png" alt="" />
+					<img
+						src="./assets/images/sophie-bluel.png"
+						alt="profil-picture-sophie-bluel" />
 				</figure>
 				<article>
 					<h2>Designer d'espace</h2>
@@ -60,6 +63,20 @@
 					</p>
 				</article>
 			</section>
+
+			<aside id="modal">
+				<div id="modal-content">
+					<img
+						src="./assets/icons/close.png"
+						alt="closed-icone"
+						id="modal-icone" />
+					<span>Galerie photo</span>
+					<div id="content"></div>
+					<div id="line"></div>
+					<button id="modal-btn">Ajouter une photo</button>
+				</div>
+			</aside>
+
 			<section id="portfolio">
 				<h2>Mes Projets</h2>
 				<div class="gallery"></div>
