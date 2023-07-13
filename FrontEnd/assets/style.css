@@ -107,6 +107,7 @@ section {
 :root {
 	--green: #1d6154;
 	--green-gray: #4a504f;
+	--green-dark: #0e2f28;
 	--brown: #b1663c;
 	--alert: #df2b28;
 	--box-shadow-color: rgba(0, 0, 0, 0.09);
@@ -187,6 +188,48 @@ a:hover,
 a:active {
 	color: var(--brown);
 	font-weight: 900;
+}
+
+/* Edit Bar */
+#edit-bar {
+	width: 100%;
+	display: none;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	position: sticky;
+	top: 0;
+	left: 0;
+	margin-bottom: 38px;
+	background-color: #000000;
+	color: #ffff;
+}
+
+#edit {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-right: 21px;
+}
+
+#edit-icone {
+	padding-right: 8px;
+}
+
+#edit-btn {
+	margin: 10px 0;
+	padding: 11px 23px;
+	text-align: center;
+	border-radius: 60px;
+	cursor: pointer;
+	border: none;
+	background-color: #ffff;
+}
+
+#edit-btn:hover,
+edit-btn:active {
+	background-color: var(--green);
+	color: #fffef8;
 }
 
 /* Introduction Section */
@@ -345,6 +388,11 @@ input[type="submit"] {
 	cursor: pointer;
 }
 
+input[type="submit"]:hover,
+input[type="submit"]:active {
+	background-color: var(--green-dark);
+}
+
 #login {
 	margin-top: 150px;
 }
@@ -377,7 +425,7 @@ input[type="submit"] {
 footer {
 	width: 100%;
 	height: 60px;
-	position: sticky;
+	position: aboslute;
 	bottom: 0;
 	left: 0;
 	background-color: #ffff;

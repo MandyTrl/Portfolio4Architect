@@ -1,4 +1,4 @@
-import { homePageUrl, loginApiUrl, loginPageUrl } from "./links.js"
+import { homePageUrl, loginApiUrl } from "./links.js"
 
 const loginForm = document.getElementById("login-form") //récupération des éléments du DOM
 const alerteMSG = document.getElementById("alert-msg")
@@ -6,7 +6,7 @@ const img = document.getElementById("alert-icon")
 
 // Gère l'envoi du formulaire de login
 loginForm.onsubmit = (e) => {
-	e.preventDefault() //empêche le chargement d'une nouvelle page par le navigateur
+	e.preventDefault() //empêche le comportement par défaut du navigateur comme le chargement d'une nouvelle page par le navigateur
 	authentification() //appelle la fct d'authent
 }
 
@@ -40,9 +40,11 @@ async function authentification() {
 		const token = user.token //récupération du token
 
 		if (token) {
+			window.localStorage.setItem("Token", token) //enregistrement du token dans le localStorage
+
 			setTimeout(() => {
 				window.location.href = homePageUrl
-			}, 2300)
+			}, 2300) //redirige vers la home page après un délai
 		}
 
 		return token

@@ -122,3 +122,10 @@ async function displayProjects() {
 }
 
 displayProjects() //appel de la fct
+
+// Récupération du token et affichage de l'edit bar
+const editBar = document.getElementById("edit-bar")
+const token = localStorage.getItem("Token")
+if (token) {
+	editBar.style.display = "flex" //affiche l'edit-bar sur la home page
+}
