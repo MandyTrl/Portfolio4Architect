@@ -15,16 +15,36 @@ function createPicturesGallery() {
 		//création des éléments (DOM) avec les datas reçues
 		const pictureContainer = document.createElement("div")
 		pictureContainer.className = "picture-container"
+
 		const picture = document.createElement("img")
 		picture.setAttribute("src", img)
 		picture.setAttribute("alt", "picture-to-edit")
-		const span = document.createElement("edit-txt")
-		span.innerText = "Editer"
+		const span = document.createElement("span")
+		span.className = "edit-text"
+		span.innerText = "éditer"
+
+		const containerIconeM = document.createElement("div")
+		containerIconeM.className = "container-iconeM"
+
+		const containerIconeT = document.createElement("div")
+		containerIconeT.className = "container-iconeT"
+
+		const moveIcone = document.createElement("i")
+		moveIcone.className =
+			"fa-solid a-arrows-up-down-left-right fa-xs move-icone"
+		moveIcone.style.color = "#ffff"
+
+		const trashIcone = document.createElement("i")
+		trashIcone.className = "fa-solid fa-trash-can fa-xs trash-icone"
 
 		//association des éléments enfants aux éléments parents du DOM
 		content.appendChild(pictureContainer)
 		pictureContainer.appendChild(picture)
 		pictureContainer.appendChild(span)
+		pictureContainer.appendChild(containerIconeM)
+		pictureContainer.appendChild(containerIconeM)
+		containerIconeM.appendChild(moveIcone)
+		containerIconeT.appendChild(trashIcone)
 	})
 }
 
