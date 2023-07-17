@@ -426,12 +426,12 @@ input[type="submit"]:active,
 
 /* Modal */
 #modal {
+	display: block;
 	position: absolute;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	background-color: #ffff;
 	width: 630px;
-	height: 730px;
 	border-radius: 10px;
 }
 
@@ -459,6 +459,7 @@ input[type="submit"]:active,
 .picture-container {
 	display: flex;
 	flex-direction: column;
+	position: relative;
 	padding: 12px 4px;
 }
 
@@ -491,12 +492,24 @@ input[type="submit"]:active,
 	background-color: var(--gray);
 }
 
+.container-icones {
+	display: flex;
+	position: absolute;
+	top: 15px;
+	right: 7px;
+}
+
 .container-iconeM,
 .container-iconeT {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	width: 17px;
+	height: 17px;
 	background-color: #000000;
 	border-radius: 2px;
-	padding: 4px;
+	padding: 3px;
+	margin: 1.5px;
 }
 
 .move-icone,
@@ -504,11 +517,20 @@ input[type="submit"]:active,
 	color: #ffff;
 }
 
-#modal-icone {
-	width: 20px;
+.close-modal {
+	width: 24px;
 	position: absolute;
-	top: 24px;
-	right: 24px;
+	top: 26px;
+	right: 30px;
+}
+
+.close-icone {
+	color: #000000;
+}
+
+.close-icone:hover,
+:active {
+	cursor: pointer;
 }
 
 /* Footer */
