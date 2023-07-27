@@ -527,6 +527,11 @@ input[type="submit"]:active,
 	color: #ffff;
 }
 
+.container-iconeM:hover,
+.container-iconeT:hover {
+	cursor: pointer;
+}
+
 #close-modal {
 	width: 24px;
 	position: absolute;
