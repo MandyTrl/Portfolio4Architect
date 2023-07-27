@@ -7,6 +7,7 @@ const pictures = projects.map((el) => el.imageUrl) //tblx des url (img)
 //récupération des éléments du DOM
 const modal = document.getElementById("modal")
 const closeBtn = document.getElementById("close-modal")
+const openModal = document.getElementById("open-modal")
 const content = document.getElementById("content")
 
 // Fct pour générer la galerie d'images
@@ -52,8 +53,21 @@ function createPicturesGallery() {
 
 createPicturesGallery()
 
-// Ferme la modal au clic sur le bouton "close"
-closeBtn.addEventListener("click", () => {
-	console.log("first")
+// Fcts pour ouvrir/fermer la modal
+function openModalHandler() {
+	modal.style.display = "block"
+}
+function closeModalHandler() {
 	modal.style.display = "none"
+}
+
+// Ajout des écouteurs d'événements "click"
+openModal.addEventListener("click", openModalHandler)
+closeBtn.addEventListener("click", closeModalHandler)
+
+// Ferme la modal quand le clic se fait en-dehors de celle-ci
+window.addEventListener("mousedown", (e) => {
+	if (e.target !== modal) {
+		closeModalHandler()
+	}
 })

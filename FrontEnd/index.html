@@ -22,14 +22,14 @@
 		<div id="edit-bar">
 			<div id="edit">
 				<img src="./assets/icons/edit.png" alt="edit-icone" id="edit-icone" />
-				<p><a href="#modal">Mode édition</a></p>
+				<p id="open-modal"><a href="#">Mode édition</a></p>
 			</div>
 
 			<button id="edit-btn">publier les changements</button>
 		</div>
 
 		<header>
-			<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+			<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 			<nav>
 				<ul>
 					<li><a href="#portfolio">projets</a></li>
@@ -67,19 +67,6 @@
 				</article>
 			</section>
 
-			<aside id="modal">
-				<div id="modal-content">
-					<button id="close-modal">
-						<i class="fa-solid fa-xmark fa-xl close-icone"></i>
-					</button>
-					<h3>Galerie photo</h3>
-					<div id="content"></div>
-					<div id="line"></div>
-					<button id="btn-modal">Ajouter une photo</button>
-					<span id="delete-all">Supprimer la galerie</span>
-				</div>
-			</aside>
-
 			<section id="portfolio">
 				<h2>Mes Projets</h2>
 				<div class="gallery"></div>
@@ -98,6 +85,19 @@
 				</form>
 			</section>
 		</main>
+
+		<aside id="modal">
+			<div id="modal-content">
+				<button id="close-modal">
+					<i class="fa-solid fa-xmark fa-xl close-icone"></i>
+				</button>
+				<h3>Galerie photo</h3>
+				<div id="content"></div>
+				<div id="line"></div>
+				<button id="btn-modal">Ajouter une photo</button>
+				<span id="delete-all">Supprimer la galerie</span>
+			</div>
+		</aside>
 
 		<footer>
 			<nav>

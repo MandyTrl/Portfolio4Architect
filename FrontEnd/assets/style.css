@@ -211,6 +211,15 @@ a:active {
 	margin-right: 21px;
 }
 
+#open-modal a {
+	color: #ffff;
+}
+
+#open-modal a:hover,
+#open-modal a:active {
+	color: var(--brown);
+}
+
 #edit-icone {
 	padding-right: 8px;
 }
@@ -426,9 +435,10 @@ input[type="submit"]:active,
 
 /* Modal */
 #modal {
-	display: block;
+	display: none;
 	position: absolute;
 	left: 50%;
+	top: 100%;
 	transform: translate(-50%, -50%);
 	background-color: #ffff;
 	width: 630px;
@@ -517,11 +527,13 @@ input[type="submit"]:active,
 	color: #ffff;
 }
 
-.close-modal {
+#close-modal {
 	width: 24px;
 	position: absolute;
 	top: 26px;
 	right: 30px;
+	background-color: transparent;
+	border: none;
 }
 
 .close-icone {
