@@ -11,34 +11,16 @@ const pictures = projects.map((el) => {
 })
 const token = localStorage.getItem("Token")
 
-// Fct pour supprimer un projet
-async function deleteProject(id) {
-	try {
-		const response = await fetch(`${projectsApiUrl}/${id}`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
-			},
-		})
-
-		if (!response.ok) {
-			throw new Error("Error deleting project")
-		} else {
-			console.log("Project successfully deleted !")
-		}
-	} catch (error) {
-		console.error(error.message)
-	}
-}
-
 //récupération des éléments du DOM
 const modal = document.getElementById("modal")
+const modalContent = document.getElementById("content")
 const closeBtn = document.getElementById("close-modal")
 const openModal = document.getElementById("open-modal")
 const content = document.getElementById("content")
+const btnModal = document.getElementById("btn-modal")
+const deleteGalleryBtn = document.getElementById("delete-all")
 
-// Fct pour générer la galerie d'images
+// Générer la galerie d'images
 function createPicturesGallery() {
 	pictures.forEach((img) => {
 		//création des éléments (DOM) avec les datas reçues
@@ -58,8 +40,10 @@ function createPicturesGallery() {
 		containerIconeM.className = "container-iconeM"
 		const containerIconeT = document.createElement("div")
 		containerIconeT.className = "container-iconeT"
-		containerIconeT.addEventListener("click", () => {
-			deleteProject(img.id)
+		containerIconeT.addEventListener("click", (e) => {
+			openModalHandler()
+			e.preventDefault()
+			deleteProject(e, img.id)
 		})
 
 		const moveIcone = document.createElement("i")
@@ -106,3 +90,114 @@ window.addEventListener("mousedown", (e) => {
 		closeModalHandler()
 	}
 })
+
+// Supprimer un projet
+async function deleteProject(e, id) {
+	e.preventDefault()
+	try {
+		const response = await fetch(`${projectsApiUrl}/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
+			},
+		})
+
+		if (!response.ok) {
+			throw new Error("Error deleting project")
+		} else {
+			console.log("Project successfully deleted !")
+		}
+	} catch (error) {
+		console.error(error.message)
+	}
+}
+
+btnModal.addEventListener("click", () => {
+	modalContent.innerHTML = ""
+	generateProjectForm()
+})
+
+function generateProjectForm() {
+	//modifie/mets à jour les éléments (DOM) nécessaires
+	document.querySelector("h3").innerHTML = "Ajout photo"
+	btnModal.innerHTML = "Valider"
+	deleteGalleryBtn.remove()
+
+	//création des éléments (DOM)
+	const projectForm = document.createElement("form")
+	projectForm.className = "project-form"
+
+	const containerImg = document.createElement("div")
+	containerImg.className = "container-img"
+
+	const imgIcone = document.createElement("i")
+	imgIcone.className = "fa-regular fa-image fa-5x"
+	imgIcone.style.color = "#b9c5cc"
+
+	const addImgBtn = document.createElement("button")
+	addImgBtn.className = "btn-add-img"
+	addImgBtn.innerHTML = "+ Ajouter photo"
+
+	const spanImg = document.createElement("span")
+	spanImg.innerHTML = "jpg, png : 4mo max"
+
+	const inputTitle = document.createElement("input")
+	inputTitle.type = "text"
+	inputTitle.name = "Titre"
+	inputTitle.className = "title"
+	const titleLabel = document.createElement("label")
+	titleLabel.innerHTML = "Titre"
+	titleLabel.setAttribute("for", "title")
+
+	const selectCategory = document.createElement("select")
+	const categoryLabel = document.createElement("label")
+	categoryLabel.innerHTML = "Catégorie"
+	categoryLabel.setAttribute("for", "category")
+	const opt = ["test", "hey"]
+	selectCategory.name = "Catégorie"
+	selectCategory.className = "category"
+	opt.forEach((el, key) => {
+		selectCategory[key] = new Option(el, key)
+	})
+
+	//association des éléments enfants aux éléments parents du DOM
+	modalContent.appendChild(projectForm)
+	projectForm.appendChild(containerImg)
+	projectForm.appendChild(inputTitle)
+	projectForm.insertBefore(titleLabel, inputTitle)
+	projectForm.appendChild(selectCategory)
+	projectForm.insertBefore(categoryLabel, selectCategory)
+	containerImg.appendChild(imgIcone)
+	containerImg.appendChild(addImgBtn)
+	containerImg.appendChild(spanImg)
+}
+
+// Ajouter un nvx projet
+async function addProject() {
+	e.preventDefault()
+	const newProject = JSON.stringify({
+		image: image.value, //récupération des valeurs des inputs
+		title: title.value,
+		category: category.value,
+	}) //sérialisation
+
+	try {
+		const response = await fetch(projectsApiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
+			},
+			body: newProject,
+		})
+
+		if (!response.ok) {
+			throw new Error("Error add new project")
+		} else {
+			console.log("Project successfully added !")
+		}
+	} catch (error) {
+		console.error(error.message)
+	}
+}
