@@ -4,7 +4,7 @@ const loginForm = document.getElementById("login-form") //récupération des él
 const alerteMSG = document.getElementById("alert-msg")
 const img = document.getElementById("alert-icon")
 
-// Gère l'envoi du formulaire de login
+//Gère l'envoi du formulaire de login
 loginForm.onsubmit = (e) => {
 	e.preventDefault() //empêche le comportement par défaut du navigateur comme le chargement d'une nouvelle page par le navigateur
 	authentification() //appelle la fct d'authent

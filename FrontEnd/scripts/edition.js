@@ -1,8 +1,10 @@
-import { getProjects } from "./fetcher.js"
+import { getProjects, getCategories } from "./fetcher.js"
 import { projectsApiUrl } from "./links.js"
 import { fetchData } from "./projects.js"
 
 const projects = await fetchData(getProjects()) //besoin du await pour avoir la réponse dans les fct async sinon ça renvoie la promesse
+const categories = await fetchData(getCategories())
+
 const pictures = projects.map((el) => {
 	return {
 		id: el.id,
@@ -20,12 +22,20 @@ const content = document.getElementById("content")
 const btnModal = document.getElementById("btn-modal")
 const deleteGalleryBtn = document.getElementById("delete-all")
 
-// Générer la galerie d'images
+//Générer la galerie d'images
 function createPicturesGallery() {
 	pictures.forEach((img) => {
 		//création des éléments (DOM) avec les datas reçues
 		const pictureContainer = document.createElement("div")
 		pictureContainer.className = "picture-container"
+
+		//display de l'icône "move" au survol
+		pictureContainer.addEventListener("mouseover", () => {
+			containerIconeM.style.display = "flex"
+		})
+		pictureContainer.addEventListener("mouseout", () => {
+			containerIconeM.style.display = "none"
+		})
 
 		const picture = document.createElement("img")
 		picture.setAttribute("src", img.url)
@@ -38,6 +48,7 @@ function createPicturesGallery() {
 
 		const containerIconeM = document.createElement("div")
 		containerIconeM.className = "container-iconeM"
+		containerIconeM.style.display = "none"
 		const containerIconeT = document.createElement("div")
 		containerIconeT.className = "container-iconeT"
 		containerIconeT.addEventListener("click", (e) => {
@@ -68,7 +79,7 @@ function createPicturesGallery() {
 
 createPicturesGallery()
 
-// Display de la modal
+//Display de la modal
 //fcts pour ouvrir/fermer la modal
 function openModalHandler() {
 	modal.style.display = "block"
@@ -91,7 +102,7 @@ window.addEventListener("mousedown", (e) => {
 	}
 })
 
-// Supprimer un projet
+//Supprimer un projet
 async function deleteProject(e, id) {
 	e.preventDefault()
 	try {
@@ -122,11 +133,13 @@ function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires
 	document.querySelector("h3").innerHTML = "Ajout photo"
 	btnModal.innerHTML = "Valider"
+	btnModal.setAttribute("type", "submit")
 	deleteGalleryBtn.remove()
 
 	//création des éléments (DOM)
 	const projectForm = document.createElement("form")
 	projectForm.className = "project-form"
+	projectForm.setAttribute("enctype", "multipart/form-data")
 
 	const containerImg = document.createElement("div")
 	containerImg.className = "container-img"
@@ -135,9 +148,21 @@ function generateProjectForm() {
 	imgIcone.className = "fa-regular fa-image fa-5x"
 	imgIcone.style.color = "#b9c5cc"
 
-	const addImgBtn = document.createElement("button")
-	addImgBtn.className = "btn-add-img"
-	addImgBtn.innerHTML = "+ Ajouter photo"
+	const inputImg = document.createElement("input")
+	inputImg.className = "input-img"
+	inputImg.name = "input-img"
+	inputImg.setAttribute("type", "file")
+	inputImg.style.opacity = 0
+	inputImg.setAttribute("accept", "image/png, image/jpeg")
+	const imgLabel = document.createElement("label")
+	imgLabel.className = "btn-add-img"
+	imgLabel.innerHTML = "+ Ajouter photo"
+	imgLabel.setAttribute("for", "input-img")
+
+	//permet de gérer le click de l'input sur le label
+	imgLabel.addEventListener("click", () => {
+		inputImg.click()
+	})
 
 	const spanImg = document.createElement("span")
 	spanImg.innerHTML = "jpg, png : 4mo max"
@@ -154,7 +179,7 @@ function generateProjectForm() {
 	const categoryLabel = document.createElement("label")
 	categoryLabel.innerHTML = "Catégorie"
 	categoryLabel.setAttribute("for", "category")
-	const opt = ["test", "hey"]
+	const opt = ["", ...categories]
 	selectCategory.name = "Catégorie"
 	selectCategory.className = "category"
 	opt.forEach((el, key) => {
@@ -169,35 +194,50 @@ function generateProjectForm() {
 	projectForm.appendChild(selectCategory)
 	projectForm.insertBefore(categoryLabel, selectCategory)
 	containerImg.appendChild(imgIcone)
-	containerImg.appendChild(addImgBtn)
+	containerImg.appendChild(inputImg)
+	containerImg.insertBefore(imgLabel, inputImg)
 	containerImg.appendChild(spanImg)
-}
 
-// Ajouter un nvx projet
-async function addProject() {
-	e.preventDefault()
-	const newProject = JSON.stringify({
-		image: image.value, //récupération des valeurs des inputs
-		title: title.value,
-		category: category.value,
-	}) //sérialisation
+	//nvlle écoute sur le bouton modal pour l'associer au submit du formulaire
+	btnModal.addEventListener("click", () => {
+		projectForm.submit()
+	})
 
-	try {
-		const response = await fetch(projectsApiUrl, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
-			},
-			body: newProject,
-		})
+	// Gère l'envoi du formulaire d'ajout de nvx projet
+	projectForm.onsubmit = (e) => {
+		e.preventDefault() //empêche le comportement par défaut du navigateur comme le chargement d'une nouvelle page par le navigateur
+		addProject() //appelle la fct d'authent
+	}
 
-		if (!response.ok) {
-			throw new Error("Error add new project")
-		} else {
-			console.log("Project successfully added !")
+	//Ajouter un nvx projet
+	async function addProject() {
+		const selectedOpt = selectCategory.selectedIndex
+
+		const newProject = JSON.stringify({
+			image: inputImg.value, //récupération des valeurs des inputs
+			title: inputTitle.value,
+			category: selectCategory.options[selectedOpt].text,
+		}) //sérialisation
+
+		console.log(newProject)
+
+		try {
+			const response = await fetch(projectsApiUrl, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
+				},
+				body: newProject,
+			})
+
+			if (!response.ok) {
+				throw new Error("Error add new project")
+			} else {
+				console.log("Project successfully added !")
+			}
+		} catch (error) {
+			console.error(error.message)
 		}
-	} catch (error) {
-		console.error(error.message)
 	}
 }
