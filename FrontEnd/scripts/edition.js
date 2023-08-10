@@ -1,6 +1,7 @@
-import { getProjects, getCategories } from "./fetcher.js"
-import { projectsApiUrl } from "./links.js"
 import { fetchData } from "./projects.js"
+import { projectsApiUrl } from "./links.js"
+import { getProjects, getCategories } from "./fetcher.js"
+import { deleteProject, deleteAllProjects } from "./deleteProjects.js"
 
 const projects = await fetchData(getProjects()) //besoin du await pour avoir la réponse dans les fct async sinon ça renvoie la promesse
 const categories = await fetchData(getCategories())
@@ -24,8 +25,8 @@ const btnModal = document.getElementById("btn-modal")
 const deleteGalleryBtn = document.getElementById("delete-all")
 const line = document.getElementById("line")
 
-//Générer la galerie d'images
-function createPicturesGallery() {
+//Génère la galerie d'images
+function generatePicturesGallery() {
 	pictures.forEach((img) => {
 		//création des éléments (DOM) avec les datas reçues
 		const pictureContainer = document.createElement("div")
@@ -79,10 +80,9 @@ function createPicturesGallery() {
 	})
 }
 
-createPicturesGallery()
+generatePicturesGallery()
 
 //Display de la modal
-//fcts pour ouvrir/fermer la modal
 function openModalHandler() {
 	modal.style.display = "block"
 }
@@ -90,12 +90,17 @@ function closeModalHandler() {
 	modal.style.display = "none"
 }
 
-//ajout des écouteurs d'événements "click"
+//Ajout des écouteurs d'événements "click"
 openModal.addEventListener("click", openModalHandler)
 closeBtn.addEventListener("click", closeModalHandler)
-deleteGalleryBtn.addEventListener("click", generteAlert)
+deleteGalleryBtn.addEventListener("click", generateAlert)
+btnModal.addEventListener("click", (e) => {
+	e.preventDefault()
+	modalContent.innerHTML = ""
+	generateProjectForm()
+})
 
-//ferme la modal qd le clic se fait en-dehors de celle-ci
+//Ferme la modal qd le clic se fait en-dehors de celle-ci
 window.addEventListener("mousedown", (e) => {
 	const targetElement = e.target
 	const isInsideModal = modal.contains(targetElement) //check si le user click dans la modal
@@ -105,87 +110,7 @@ window.addEventListener("mousedown", (e) => {
 	}
 })
 
-//Supprimer un projet
-async function deleteProject(e, id) {
-	e.preventDefault()
-	try {
-		const response = await fetch(`${projectsApiUrl}/${id}`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
-			},
-		})
-
-		if (!response.ok) {
-			throw new Error("Error deleting project")
-		} else {
-			console.log("Project successfully deleted !")
-		}
-	} catch (error) {
-		console.error(error.message)
-	}
-}
-
-//Supprimer tous les projets
-async function deleteAllProjects() {
-	try {
-		const response = await fetch(`${projectsApiUrl}/test`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
-			},
-		})
-
-		if (!response.ok) {
-			throw new Error("Error deleting projects")
-		} else {
-			console.log("Projects successfully deleted !")
-		}
-	} catch (error) {
-		console.error(error.message)
-	}
-}
-
-btnModal.addEventListener("click", () => {
-	modalContent.innerHTML = ""
-	generateProjectForm()
-})
-
-//Confirmation de la suppression de tous les projets
-function generteAlert() {
-	modalContent.innerHTML = ""
-	line.remove()
-	btnModal.remove()
-	deleteGalleryBtn.remove()
-	document.querySelector("h3").remove()
-
-	modal.style.backgroundColor = "#d65353"
-	modal.style.padding = "8px 25px"
-	content.style.flexDirection = "column"
-	modalContainer.style.margin = "margin: 0 70px 20px 70px;"
-
-	const confirm = document.createElement("div")
-	confirm.className = "alert"
-	confirm.innerHTML =
-		"Êtes-vous sûr de vouloir supprimer tous vos projets ? <br><br> Cette action est définitive."
-	confirm.style.marginBottom = "30px"
-
-	const btnConfirmDelete = document.createElement("div")
-	btnConfirmDelete.className = "btn-confirm-delete"
-	btnConfirmDelete.innerHTML = "Oui"
-
-	content.appendChild(confirm)
-	content.appendChild(btnConfirmDelete)
-
-	btnConfirmDelete.addEventListener("click", (e) => {
-		e.preventDefault()
-		deleteAllProjects()
-		closeModalHandler()
-	})
-}
-
+//Génère le formulaire
 function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires
 	document.querySelector("h3").innerHTML = "Ajout photo"
@@ -207,6 +132,7 @@ function generateProjectForm() {
 
 	const imgIcone = document.createElement("i")
 	imgIcone.className = "fa-regular fa-image fa-5x"
+	imgIcone.id = "testIMG"
 	imgIcone.style.color = "#b9c5cc"
 
 	const inputImg = document.createElement("input")
@@ -215,12 +141,13 @@ function generateProjectForm() {
 	inputImg.setAttribute("type", "file")
 	inputImg.style.opacity = 0
 	inputImg.setAttribute("accept", "image/png, image/jpeg")
-
-	//ajouter d'un écouteur d'événement de changement d'img
 	inputImg.addEventListener("change", (event) => {
-		const selectedFile = event.target.files[0]
+		const imageLoaded = event.target.files[0]
 
-		console.log(selectedFile)
+		//Génère la prévisualisation de l'img s'il y a un fichier dans la listeFiles
+		if (imageLoaded) {
+			generatePicturePreview(imageLoaded)
+		}
 	})
 
 	const imgLabel = document.createElement("label")
@@ -268,11 +195,36 @@ function generateProjectForm() {
 	containerImg.insertBefore(imgLabel, inputImg)
 	containerImg.appendChild(spanImg)
 
+	//Génère la prévisualisation de l'img
+	function generatePicturePreview(imageLoaded) {
+		spanImg.remove()
+		imgLabel.remove()
+		imgIcone.remove()
+		const test = document.getElementById("testIMG")
+		test.remove()
+
+		inputImg.style.display = "none"
+
+		const analyseurImg = new FileReader()
+
+		const previewImg = document.createElement("img")
+		previewImg.className = "preview-img"
+		previewImg.src = ""
+		previewImg.alt = "preview-img"
+
+		containerImg.appendChild(previewImg)
+
+		analyseurImg.readAsDataURL(imageLoaded)
+
+		analyseurImg.addEventListener("load", function () {
+			previewImg.setAttribute("src", analyseurImg.result)
+		})
+	}
+
 	//Gère l'envoi du formulaire d'ajout de nvx projet
 	if (projectForm) {
-		// Ajout de l'écouteur d'événement au bouton de validation
 		btnModal.addEventListener("click", async () => {
-			await addProject() //appelle la fct d'authent
+			await addProject()
 		})
 	}
 
@@ -308,4 +260,37 @@ function generateProjectForm() {
 			console.error(error.message)
 		}
 	}
+}
+
+//Confirmation de la suppression de tous les projets
+function generateAlert() {
+	modalContent.innerHTML = ""
+	line.remove()
+	btnModal.remove()
+	deleteGalleryBtn.remove()
+	document.querySelector("h3").remove()
+
+	modal.style.backgroundColor = "#d65353"
+	modal.style.padding = "8px 25px"
+	content.style.flexDirection = "column"
+	modalContainer.style.margin = "margin: 0 70px 20px 70px;"
+
+	const confirm = document.createElement("div")
+	confirm.className = "alert"
+	confirm.innerHTML =
+		"Êtes-vous sûr de vouloir supprimer tous vos projets ? <br><br> Cette action est définitive."
+	confirm.style.marginBottom = "30px"
+
+	const btnConfirmDelete = document.createElement("div")
+	btnConfirmDelete.className = "btn-confirm-delete"
+	btnConfirmDelete.innerHTML = "Oui"
+
+	content.appendChild(confirm)
+	content.appendChild(btnConfirmDelete)
+
+	btnConfirmDelete.addEventListener("click", (e) => {
+		e.preventDefault()
+		deleteAllProjects()
+		closeModalHandler()
+	})
 }

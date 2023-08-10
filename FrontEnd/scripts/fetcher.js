@@ -1,6 +1,6 @@
 import { projectsApiUrl, categoriesApiUrl } from "./links.js"
 
-// Fct pour appeler les projets
+//Fetch les projets
 export async function getProjects() {
 	try {
 		const rawResp = await fetch(projectsApiUrl)
@@ -20,7 +20,7 @@ export async function getProjects() {
 	}
 }
 
-// Fct pour appeler les catégories
+//Fetch les catégories
 export async function getCategories() {
 	try {
 		const rawResp = await fetch(categoriesApiUrl)
