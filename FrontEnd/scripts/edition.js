@@ -12,6 +12,7 @@ const pictures = projects.map((el) => {
 		url: el.imageUrl,
 	}
 })
+
 const token = localStorage.getItem("Token")
 
 //récupération des éléments du DOM
@@ -132,7 +133,7 @@ function generateProjectForm() {
 
 	const imgIcone = document.createElement("i")
 	imgIcone.className = "fa-regular fa-image fa-5x"
-	imgIcone.id = "testIMG"
+	imgIcone.id = "icone-fontAwesome"
 	imgIcone.style.color = "#b9c5cc"
 
 	const inputImg = document.createElement("input")
@@ -200,8 +201,8 @@ function generateProjectForm() {
 		spanImg.remove()
 		imgLabel.remove()
 		imgIcone.remove()
-		const test = document.getElementById("testIMG")
-		test.remove()
+		const iconeI = document.getElementById("icone-fontAwesome")
+		iconeI.remove()
 
 		inputImg.style.display = "none"
 

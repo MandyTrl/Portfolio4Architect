@@ -7,7 +7,7 @@ const workCtrl = require("../controllers/works.controller")
 
 router.get("/", workCtrl.findAll)
 router.post("/", auth, multer, checkWork, workCtrl.create)
-router.delete("/test", auth, workCtrl.deleteAll)
+router.delete("/all", auth, workCtrl.deleteAll)
 router.delete("/:id", auth, workCtrl.delete)
 
 module.exports = router

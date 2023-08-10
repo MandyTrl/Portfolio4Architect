@@ -27,7 +27,7 @@ export async function deleteProject(e, id) {
 //Supprimer tous les projets
 export async function deleteAllProjects() {
 	try {
-		const response = await fetch(`${projectsApiUrl}/test`, {
+		const response = await fetch(`${projectsApiUrl}/all`, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
