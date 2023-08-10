@@ -16,6 +16,7 @@ const token = localStorage.getItem("Token")
 //récupération des éléments du DOM
 const modal = document.getElementById("modal")
 const modalContent = document.getElementById("content")
+const modalContainer = document.getElementById("modal-content")
 const closeBtn = document.getElementById("close-modal")
 const openModal = document.getElementById("open-modal")
 const content = document.getElementById("content")
@@ -92,6 +93,7 @@ function closeModalHandler() {
 //ajout des écouteurs d'événements "click"
 openModal.addEventListener("click", openModalHandler)
 closeBtn.addEventListener("click", closeModalHandler)
+deleteGalleryBtn.addEventListener("click", generteAlert)
 
 //ferme la modal qd le clic se fait en-dehors de celle-ci
 window.addEventListener("mousedown", (e) => {
@@ -125,10 +127,64 @@ async function deleteProject(e, id) {
 	}
 }
 
+//Supprimer tous les projets
+async function deleteAllProjects() {
+	try {
+		const response = await fetch(`${projectsApiUrl}/test`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
+			},
+		})
+
+		if (!response.ok) {
+			throw new Error("Error deleting projects")
+		} else {
+			console.log("Projects successfully deleted !")
+		}
+	} catch (error) {
+		console.error(error.message)
+	}
+}
+
 btnModal.addEventListener("click", () => {
 	modalContent.innerHTML = ""
 	generateProjectForm()
 })
+
+//Confirmation de la suppression de tous les projets
+function generteAlert() {
+	modalContent.innerHTML = ""
+	line.remove()
+	btnModal.remove()
+	deleteGalleryBtn.remove()
+	document.querySelector("h3").remove()
+
+	modal.style.backgroundColor = "#d65353"
+	modal.style.padding = "8px 25px"
+	content.style.flexDirection = "column"
+	modalContainer.style.margin = "margin: 0 70px 20px 70px;"
+
+	const confirm = document.createElement("div")
+	confirm.className = "alert"
+	confirm.innerHTML =
+		"Êtes-vous sûr de vouloir supprimer tous vos projets ? <br><br> Cette action est définitive."
+	confirm.style.marginBottom = "30px"
+
+	const btnConfirmDelete = document.createElement("div")
+	btnConfirmDelete.className = "btn-confirm-delete"
+	btnConfirmDelete.innerHTML = "Oui"
+
+	content.appendChild(confirm)
+	content.appendChild(btnConfirmDelete)
+
+	btnConfirmDelete.addEventListener("click", (e) => {
+		e.preventDefault()
+		deleteAllProjects()
+		closeModalHandler()
+	})
+}
 
 function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires

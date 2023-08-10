@@ -634,3 +634,30 @@ footer ul li {
 	font-size: 14px;
 	font-weight: light;
 }
+
+.alert {
+	padding-top: 55px;
+	text-align: center;
+	color: #ffff;
+}
+
+.btn-confirm-delete {
+	font-family: "Syne";
+	font-weight: 700;
+	width: 50px;
+	background-color: white;
+	color: #000000;
+	padding: 11px 23px;
+	margin: 1em auto;
+	text-align: center;
+	border: 2px solid transparent;
+	border-radius: 60px;
+	cursor: pointer;
+}
+
+.btn-confirm-delete:hover,
+.btn-confirm-delete:active {
+	background-color: var(--alert);
+	border: 2px solid white;
+	color: white;
+}

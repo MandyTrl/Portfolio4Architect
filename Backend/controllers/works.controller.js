@@ -33,3 +33,12 @@ exports.delete = async (req, res) => {
 		return res.status(500).json({ error: new Error("Something went wrong") })
 	}
 }
+
+exports.deleteAll = async (req, res) => {
+	try {
+		await Works.destroy({ where: {} })
+		return res.status(204).json({ message: "Works Deleted Successfully" })
+	} catch (e) {
+		return res.status(500).json({ error: new Error("Something went wrong") })
+	}
+}
