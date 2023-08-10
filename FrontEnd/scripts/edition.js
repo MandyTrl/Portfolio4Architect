@@ -21,6 +21,7 @@ const openModal = document.getElementById("open-modal")
 const content = document.getElementById("content")
 const btnModal = document.getElementById("btn-modal")
 const deleteGalleryBtn = document.getElementById("delete-all")
+const line = document.getElementById("line")
 
 //Générer la galerie d'images
 function createPicturesGallery() {
@@ -132,8 +133,12 @@ btnModal.addEventListener("click", () => {
 function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires
 	document.querySelector("h3").innerHTML = "Ajout photo"
+	line.style.marginBottom = "75px"
 	btnModal.innerHTML = "Valider"
 	btnModal.setAttribute("type", "submit")
+	btnModal.style.position = "fixed"
+	btnModal.style.bottom = "28px"
+	btnModal.style.left = "195px"
 	deleteGalleryBtn.remove()
 
 	//création des éléments (DOM)
@@ -154,6 +159,14 @@ function generateProjectForm() {
 	inputImg.setAttribute("type", "file")
 	inputImg.style.opacity = 0
 	inputImg.setAttribute("accept", "image/png, image/jpeg")
+
+	//ajouter d'un écouteur d'événement de changement d'img
+	inputImg.addEventListener("change", (event) => {
+		const selectedFile = event.target.files[0]
+
+		console.log(selectedFile)
+	})
+
 	const imgLabel = document.createElement("label")
 	imgLabel.className = "btn-add-img"
 	imgLabel.innerHTML = "+ Ajouter photo"
@@ -188,6 +201,7 @@ function generateProjectForm() {
 
 	//association des éléments enfants aux éléments parents du DOM
 	modalContent.appendChild(projectForm)
+	projectForm.appendChild(btnModal)
 	projectForm.appendChild(containerImg)
 	projectForm.appendChild(inputTitle)
 	projectForm.insertBefore(titleLabel, inputTitle)
@@ -198,34 +212,32 @@ function generateProjectForm() {
 	containerImg.insertBefore(imgLabel, inputImg)
 	containerImg.appendChild(spanImg)
 
-	//nvlle écoute sur le bouton modal pour l'associer au submit du formulaire
-	btnModal.addEventListener("click", () => {
-		projectForm.submit()
-	})
-
-	// Gère l'envoi du formulaire d'ajout de nvx projet
-	projectForm.onsubmit = (e) => {
-		e.preventDefault() //empêche le comportement par défaut du navigateur comme le chargement d'une nouvelle page par le navigateur
-		addProject() //appelle la fct d'authent
+	//Gère l'envoi du formulaire d'ajout de nvx projet
+	if (projectForm) {
+		// Ajout de l'écouteur d'événement au bouton de validation
+		btnModal.addEventListener("click", async () => {
+			await addProject() //appelle la fct d'authent
+		})
 	}
 
 	//Ajouter un nvx projet
 	async function addProject() {
 		const selectedOpt = selectCategory.selectedIndex
 
-		const newProject = JSON.stringify({
-			image: inputImg.value, //récupération des valeurs des inputs
-			title: inputTitle.value,
-			category: selectCategory.options[selectedOpt].text,
-		}) //sérialisation
+		if (selectedOpt === 0) {
+			console.log("Veuillez sélectionner une catégorie")
+			return
+		}
 
-		console.log(newProject)
+		const newProject = new FormData()
+		newProject.append("image", inputImg.files[0])
+		newProject.append("title", inputTitle.value)
+		newProject.append("category", selectedOpt)
 
 		try {
 			const response = await fetch(projectsApiUrl, {
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json",
 					Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
 				},
 				body: newProject,
