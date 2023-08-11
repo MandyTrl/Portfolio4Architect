@@ -16,9 +16,11 @@ const pictures = projects.map((el) => {
 const token = localStorage.getItem("Token")
 
 //récupération des éléments du DOM
+const body = document.body
 const modal = document.getElementById("modal")
+const bgModal = document.getElementById("bg-modal")
 const modalContent = document.getElementById("content")
-const modalContainer = document.getElementById("modal-content")
+const modalContainer = document.getElementById("modal-container")
 const closeBtn = document.getElementById("close-modal")
 const openModal = document.getElementById("open-modal")
 const content = document.getElementById("content")
@@ -56,8 +58,6 @@ function generatePicturesGallery() {
 		const containerIconeT = document.createElement("div")
 		containerIconeT.className = "container-iconeT"
 		containerIconeT.addEventListener("click", (e) => {
-			openModalHandler()
-			e.preventDefault()
 			deleteProject(e, img.id)
 		})
 
@@ -86,9 +86,11 @@ generatePicturesGallery()
 //Display de la modal
 function openModalHandler() {
 	modal.style.display = "block"
+	body.style.overflow = "hidden"
 }
 function closeModalHandler() {
 	modal.style.display = "none"
+	body.style.overflow = "unset"
 }
 
 //Ajout des écouteurs d'événements "click"
@@ -102,9 +104,9 @@ btnModal.addEventListener("click", (e) => {
 })
 
 //Ferme la modal qd le clic se fait en-dehors de celle-ci
-window.addEventListener("mousedown", (e) => {
+bgModal.addEventListener("mousedown", (e) => {
 	const targetElement = e.target
-	const isInsideModal = modal.contains(targetElement) //check si le user click dans la modal
+	const isInsideModal = modalContainer.contains(targetElement) //check si le user click dans la modal
 
 	if (!isInsideModal && targetElement !== openModal) {
 		closeModalHandler()

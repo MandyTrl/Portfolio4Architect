@@ -37,7 +37,8 @@
 				<ul>
 					<li><a href="#portfolio">projets</a></li>
 					<li>contact</li>
-					<li><a href="login.html">login</a></li>
+					<li id="login"><a href="login.html">login</a></li>
+					<li id="logout">logout</li>
 					<li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
 				</ul>
 			</nav>
@@ -90,15 +91,17 @@
 		</main>
 
 		<aside id="modal">
-			<div id="modal-content">
-				<button id="close-modal">
-					<i class="fa-solid fa-xmark fa-xl close-icone"></i>
-				</button>
-				<h3>Galerie photo</h3>
-				<div id="content"></div>
-				<div id="line"></div>
-				<button id="btn-modal">Ajouter une photo</button>
-				<span id="delete-all">Supprimer la galerie</span>
+			<div id="bg-modal">
+				<div id="modal-container">
+					<button id="close-modal">
+						<i class="fa-solid fa-xmark fa-xl close-icone"></i>
+					</button>
+					<h3>Galerie photo</h3>
+					<div id="content"></div>
+					<div id="line"></div>
+					<button id="btn-modal">Ajouter une photo</button>
+					<span id="delete-all">Supprimer la galerie</span>
+				</div>
 			</div>
 		</aside>
 

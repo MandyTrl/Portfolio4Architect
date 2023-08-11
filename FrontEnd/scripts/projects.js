@@ -125,6 +125,18 @@ displayProjects() //appel de la fct
 // Récupération du token et affichage de l'edit bar
 const editBar = document.getElementById("edit-bar")
 const token = localStorage.getItem("Token")
+
+const login = document.getElementById("login")
+const logout = document.getElementById("logout")
+
+logout.addEventListener("click", () => {
+	localStorage.removeItem("Token")
+	location.reload()
+})
+
 if (token) {
 	editBar.style.display = "flex" //affiche l'edit-bar sur la home page
+	logout.style.display = "unset"
+} else {
+	login.style.display = "unset"
 }
