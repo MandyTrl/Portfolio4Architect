@@ -136,7 +136,6 @@ logout.addEventListener("click", () => {
 
 if (token) {
 	editBar.style.display = "flex" //affiche l'edit-bar sur la home page
+	login.style.display = "none"
 	logout.style.display = "unset"
-} else {
-	login.style.display = "unset"
 }

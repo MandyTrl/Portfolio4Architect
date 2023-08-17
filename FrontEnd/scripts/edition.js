@@ -1,7 +1,7 @@
-import { fetchData } from "./projects.js"
-import { projectsApiUrl } from "./links.js"
-import { getProjects, getCategories } from "./fetcher.js"
-import { deleteProject, deleteAllProjects } from "./deleteProjects.js"
+import { fetchData } from './projects.js'
+import { projectsApiUrl } from './links.js'
+import { getProjects, getCategories } from './fetcher.js'
+import { deleteProject, deleteAllProjects } from './deleteProjects.js'
 
 const projects = await fetchData(getProjects()) //besoin du await pour avoir la réponse dans les fct async sinon ça renvoie la promesse
 const categories = await fetchData(getCategories())
@@ -13,61 +13,80 @@ const pictures = projects.map((el) => {
 	}
 })
 
-const token = localStorage.getItem("Token")
+const token = localStorage.getItem('Token')
 
 //récupération des éléments du DOM
 const body = document.body
-const modal = document.getElementById("modal")
-const bgModal = document.getElementById("bg-modal")
-const modalContent = document.getElementById("content")
-const modalContainer = document.getElementById("modal-container")
-const closeBtn = document.getElementById("close-modal")
-const openModal = document.getElementById("open-modal")
-const content = document.getElementById("content")
-const btnModal = document.getElementById("btn-modal")
-const deleteGalleryBtn = document.getElementById("delete-all")
-const line = document.getElementById("line")
+const h2Intro = document.querySelector('#introduction h2')
+const h2Projects = document.querySelector('#portfolio h2')
+const profilPicture = document.getElementById('profil-picture')
+const editContainers = document.querySelectorAll('.edit')
+const modal = document.getElementById('modal')
+const bgModal = document.getElementById('bg-modal')
+const modalContent = document.getElementById('content')
+const modalContainer = document.getElementById('modal-container')
+const closeBtn = document.getElementById('close-modal')
+const openModal = document.getElementById('open-modal')
+const content = document.getElementById('content')
+const btnModal = document.getElementById('btn-modal')
+const deleteGalleryBtn = document.getElementById('delete-all')
+const line = document.getElementById('line')
+
+//Génère le style d'édition
+function generateEditMode() {
+	h2Intro.style.marginTop = '35px'
+	h2Projects.style.marginRight = '31px'
+	profilPicture.style.marginBottom = '13px'
+
+	for (const editContainer of editContainers) {
+		editContainer.style.display = 'flex'
+	}
+}
+
+if (token) {
+	generateEditMode()
+}
 
 //Génère la galerie d'images
 function generatePicturesGallery() {
 	pictures.forEach((img) => {
 		//création des éléments (DOM) avec les datas reçues
-		const pictureContainer = document.createElement("div")
-		pictureContainer.className = "picture-container"
+		const pictureContainer = document.createElement('div')
+		pictureContainer.className = 'picture-container'
 
 		//display de l'icône "move" au survol
-		pictureContainer.addEventListener("mouseover", () => {
-			containerIconeM.style.display = "flex"
+		pictureContainer.addEventListener('mouseover', () => {
+			containerIconeM.style.display = 'flex'
 		})
-		pictureContainer.addEventListener("mouseout", () => {
-			containerIconeM.style.display = "none"
+		pictureContainer.addEventListener('mouseout', () => {
+			containerIconeM.style.display = 'none'
 		})
 
-		const picture = document.createElement("img")
-		picture.setAttribute("src", img.url)
-		picture.setAttribute("alt", "picture-to-edit")
-		const span = document.createElement("span")
-		span.className = "edit-text"
-		span.innerText = "éditer"
-		const containerIcones = document.createElement("div")
-		containerIcones.className = "container-icones"
+		const picture = document.createElement('img')
+		picture.setAttribute('src', img.url)
+		picture.setAttribute('alt', 'picture-to-edit')
+		const span = document.createElement('span')
+		span.className = 'edit-text'
+		span.innerText = 'éditer'
+		const containerIcones = document.createElement('div')
+		containerIcones.className = 'container-icones'
 
-		const containerIconeM = document.createElement("div")
-		containerIconeM.className = "container-iconeM"
-		containerIconeM.style.display = "none"
-		const containerIconeT = document.createElement("div")
-		containerIconeT.className = "container-iconeT"
-		containerIconeT.addEventListener("click", (e) => {
+		const containerIconeM = document.createElement('div')
+		containerIconeM.className = 'container-iconeM'
+		containerIconeM.style.display = 'none'
+		const containerIconeT = document.createElement('div')
+		containerIconeT.className = 'container-iconeT'
+		containerIconeT.addEventListener('click', (e) => {
 			deleteProject(e, img.id)
 		})
 
-		const moveIcone = document.createElement("i")
+		const moveIcone = document.createElement('i')
 		moveIcone.className =
-			"fa-solid fa-arrows-up-down-left-right fa-xs move-icone"
-		moveIcone.style.color = "#ffff"
-		const trashIcone = document.createElement("i")
+			'fa-solid fa-arrows-up-down-left-right fa-xs move-icone'
+		moveIcone.style.color = '#ffff'
+		const trashIcone = document.createElement('i')
 		trashIcone.className = `fa-solid fa-trash-can fa-xs trash-icone-${img.id}`
-		trashIcone.style.color = "#ffff"
+		trashIcone.style.color = '#ffff'
 
 		//association des éléments enfants aux éléments parents du DOM
 		content.appendChild(pictureContainer)
@@ -85,26 +104,26 @@ generatePicturesGallery()
 
 //Display de la modal
 function openModalHandler() {
-	modal.style.display = "block"
-	body.style.overflow = "hidden"
+	modal.style.display = 'block'
+	body.style.overflow = 'hidden'
 }
 function closeModalHandler() {
-	modal.style.display = "none"
-	body.style.overflow = "unset"
+	modal.style.display = 'none'
+	body.style.overflow = 'unset'
 }
 
 //Ajout des écouteurs d'événements "click"
-openModal.addEventListener("click", openModalHandler)
-closeBtn.addEventListener("click", closeModalHandler)
-deleteGalleryBtn.addEventListener("click", generateAlert)
-btnModal.addEventListener("click", (e) => {
+openModal.addEventListener('click', openModalHandler)
+closeBtn.addEventListener('click', closeModalHandler)
+deleteGalleryBtn.addEventListener('click', generateAlert)
+btnModal.addEventListener('click', (e) => {
 	e.preventDefault()
-	modalContent.innerHTML = ""
+	modalContent.innerHTML = ''
 	generateProjectForm()
 })
 
 //Ferme la modal qd le clic se fait en-dehors de celle-ci
-bgModal.addEventListener("mousedown", (e) => {
+bgModal.addEventListener('mousedown', (e) => {
 	const targetElement = e.target
 	const isInsideModal = modalContainer.contains(targetElement) //check si le user click dans la modal
 
@@ -116,35 +135,35 @@ bgModal.addEventListener("mousedown", (e) => {
 //Génère le formulaire
 function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires
-	document.querySelector("h3").innerHTML = "Ajout photo"
-	line.style.marginBottom = "75px"
-	btnModal.innerHTML = "Valider"
-	btnModal.setAttribute("type", "submit")
-	btnModal.style.position = "fixed"
-	btnModal.style.bottom = "28px"
-	btnModal.style.left = "195px"
+	document.querySelector('h3').innerHTML = 'Ajout photo'
+	line.style.marginBottom = '75px'
+	btnModal.innerHTML = 'Valider'
+	btnModal.setAttribute('type', 'submit')
+	btnModal.style.position = 'fixed'
+	btnModal.style.bottom = '28px'
+	btnModal.style.left = '195px'
 	deleteGalleryBtn.remove()
 
 	//création des éléments (DOM)
-	const projectForm = document.createElement("form")
-	projectForm.className = "project-form"
-	projectForm.setAttribute("enctype", "multipart/form-data")
+	const projectForm = document.createElement('form')
+	projectForm.className = 'project-form'
+	projectForm.setAttribute('enctype', 'multipart/form-data')
 
-	const containerImg = document.createElement("div")
-	containerImg.className = "container-img"
+	const containerImg = document.createElement('div')
+	containerImg.className = 'container-img'
 
-	const imgIcone = document.createElement("i")
-	imgIcone.className = "fa-regular fa-image fa-5x"
-	imgIcone.id = "icone-fontAwesome"
-	imgIcone.style.color = "#b9c5cc"
+	const imgIcone = document.createElement('i')
+	imgIcone.className = 'fa-regular fa-image fa-5x'
+	imgIcone.id = 'icone-fontAwesome'
+	imgIcone.style.color = '#b9c5cc'
 
-	const inputImg = document.createElement("input")
-	inputImg.className = "input-img"
-	inputImg.name = "input-img"
-	inputImg.setAttribute("type", "file")
+	const inputImg = document.createElement('input')
+	inputImg.className = 'input-img'
+	inputImg.name = 'input-img'
+	inputImg.setAttribute('type', 'file')
 	inputImg.style.opacity = 0
-	inputImg.setAttribute("accept", "image/png, image/jpeg")
-	inputImg.addEventListener("change", (event) => {
+	inputImg.setAttribute('accept', 'image/png, image/jpeg')
+	inputImg.addEventListener('change', (event) => {
 		const imageLoaded = event.target.files[0]
 
 		//Génère la prévisualisation de l'img s'il y a un fichier dans la listeFiles
@@ -153,34 +172,34 @@ function generateProjectForm() {
 		}
 	})
 
-	const imgLabel = document.createElement("label")
-	imgLabel.className = "btn-add-img"
-	imgLabel.innerHTML = "+ Ajouter photo"
-	imgLabel.setAttribute("for", "input-img")
+	const imgLabel = document.createElement('label')
+	imgLabel.className = 'btn-add-img'
+	imgLabel.innerHTML = '+ Ajouter photo'
+	imgLabel.setAttribute('for', 'input-img')
 
 	//permet de gérer le click de l'input sur le label
-	imgLabel.addEventListener("click", () => {
+	imgLabel.addEventListener('click', () => {
 		inputImg.click()
 	})
 
-	const spanImg = document.createElement("span")
-	spanImg.innerHTML = "jpg, png : 4mo max"
+	const spanImg = document.createElement('span')
+	spanImg.innerHTML = 'jpg, png : 4mo max'
 
-	const inputTitle = document.createElement("input")
-	inputTitle.type = "text"
-	inputTitle.name = "Titre"
-	inputTitle.className = "title"
-	const titleLabel = document.createElement("label")
-	titleLabel.innerHTML = "Titre"
-	titleLabel.setAttribute("for", "title")
+	const inputTitle = document.createElement('input')
+	inputTitle.type = 'text'
+	inputTitle.name = 'Titre'
+	inputTitle.className = 'title'
+	const titleLabel = document.createElement('label')
+	titleLabel.innerHTML = 'Titre'
+	titleLabel.setAttribute('for', 'title')
 
-	const selectCategory = document.createElement("select")
-	const categoryLabel = document.createElement("label")
-	categoryLabel.innerHTML = "Catégorie"
-	categoryLabel.setAttribute("for", "category")
-	const opt = ["", ...categories]
-	selectCategory.name = "Catégorie"
-	selectCategory.className = "category"
+	const selectCategory = document.createElement('select')
+	const categoryLabel = document.createElement('label')
+	categoryLabel.innerHTML = 'Catégorie'
+	categoryLabel.setAttribute('for', 'category')
+	const opt = ['', ...categories]
+	selectCategory.name = 'Catégorie'
+	selectCategory.className = 'category'
 	opt.forEach((el, key) => {
 		selectCategory[key] = new Option(el, key)
 	})
@@ -203,30 +222,30 @@ function generateProjectForm() {
 		spanImg.remove()
 		imgLabel.remove()
 		imgIcone.remove()
-		const iconeI = document.getElementById("icone-fontAwesome")
+		const iconeI = document.getElementById('icone-fontAwesome')
 		iconeI.remove()
 
-		inputImg.style.display = "none"
+		inputImg.style.display = 'none'
 
 		const analyseurImg = new FileReader()
 
-		const previewImg = document.createElement("img")
-		previewImg.className = "preview-img"
-		previewImg.src = ""
-		previewImg.alt = "preview-img"
+		const previewImg = document.createElement('img')
+		previewImg.className = 'preview-img'
+		previewImg.src = ''
+		previewImg.alt = 'preview-img'
 
 		containerImg.appendChild(previewImg)
 
 		analyseurImg.readAsDataURL(imageLoaded)
 
-		analyseurImg.addEventListener("load", function () {
-			previewImg.setAttribute("src", analyseurImg.result)
+		analyseurImg.addEventListener('load', function () {
+			previewImg.setAttribute('src', analyseurImg.result)
 		})
 	}
 
 	//Gère l'envoi du formulaire d'ajout de nvx projet
 	if (projectForm) {
-		btnModal.addEventListener("click", async () => {
+		btnModal.addEventListener('click', async () => {
 			await addProject()
 		})
 	}
@@ -236,18 +255,18 @@ function generateProjectForm() {
 		const selectedOpt = selectCategory.selectedIndex
 
 		if (selectedOpt === 0) {
-			console.log("Veuillez sélectionner une catégorie")
+			console.log('Veuillez sélectionner une catégorie')
 			return
 		}
 
 		const newProject = new FormData()
-		newProject.append("image", inputImg.files[0])
-		newProject.append("title", inputTitle.value)
-		newProject.append("category", selectedOpt)
+		newProject.append('image', inputImg.files[0])
+		newProject.append('title', inputTitle.value)
+		newProject.append('category', selectedOpt)
 
 		try {
 			const response = await fetch(projectsApiUrl, {
-				method: "POST",
+				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
 				},
@@ -255,9 +274,9 @@ function generateProjectForm() {
 			})
 
 			if (!response.ok) {
-				throw new Error("Error add new project")
+				throw new Error('Error add new project')
 			} else {
-				console.log("Project successfully added !")
+				console.log('Project successfully added !')
 			}
 		} catch (error) {
 			console.error(error.message)
@@ -267,31 +286,31 @@ function generateProjectForm() {
 
 //Confirmation de la suppression de tous les projets
 function generateAlert() {
-	modalContent.innerHTML = ""
+	modalContent.innerHTML = ''
 	line.remove()
 	btnModal.remove()
 	deleteGalleryBtn.remove()
-	document.querySelector("h3").remove()
+	document.querySelector('h3').remove()
 
-	modal.style.backgroundColor = "#d65353"
-	modal.style.padding = "8px 25px"
-	content.style.flexDirection = "column"
-	modalContainer.style.margin = "margin: 0 70px 20px 70px;"
+	modal.style.backgroundColor = '#d65353'
+	modal.style.padding = '8px 25px'
+	content.style.flexDirection = 'column'
+	modalContainer.style.margin = 'margin: 0 70px 20px 70px;'
 
-	const confirm = document.createElement("div")
-	confirm.className = "alert"
+	const confirm = document.createElement('div')
+	confirm.className = 'alert'
 	confirm.innerHTML =
-		"Êtes-vous sûr de vouloir supprimer tous vos projets ? <br><br> Cette action est définitive."
-	confirm.style.marginBottom = "30px"
+		'Êtes-vous sûr de vouloir supprimer tous vos projets ? <br><br> Cette action est définitive.'
+	confirm.style.marginBottom = '30px'
 
-	const btnConfirmDelete = document.createElement("div")
-	btnConfirmDelete.className = "btn-confirm-delete"
-	btnConfirmDelete.innerHTML = "Oui"
+	const btnConfirmDelete = document.createElement('div')
+	btnConfirmDelete.className = 'btn-confirm-delete'
+	btnConfirmDelete.innerHTML = 'Oui'
 
 	content.appendChild(confirm)
 	content.appendChild(btnConfirmDelete)
 
-	btnConfirmDelete.addEventListener("click", (e) => {
+	btnConfirmDelete.addEventListener('click', (e) => {
 		e.preventDefault()
 		deleteAllProjects()
 		closeModalHandler()
