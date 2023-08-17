@@ -184,6 +184,7 @@ button {
 a:link,
 a:visited {
 	text-decoration: none;
+	color: #000000;
 }
 
 a:visited {
@@ -192,7 +193,6 @@ a:visited {
 
 a:hover,
 a:active {
-	color: var(--brown);
 	font-weight: 900;
 }
 
@@ -280,7 +280,7 @@ a:active {
 /* Portfolio Section */
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+	margin-bottom: 57px;
 }
 
 #projects {
@@ -303,7 +303,7 @@ a:active {
 	padding: 30px 0;
 }
 
-.filters {
+#filters {
 	display: flex;
 	justify-content: center;
 }
@@ -674,7 +674,7 @@ footer nav ul {
 
 footer ul li {
 	font-size: 14px;
-	font-weight: light;
+	font-weight: lighter;
 }
 
 .alert {

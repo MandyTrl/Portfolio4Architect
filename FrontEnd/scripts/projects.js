@@ -1,4 +1,4 @@
-import { getProjects, getCategories } from "./fetcher.js"
+import { getProjects, getCategories } from './fetcher.js'
 
 // Fct générale pour exploiter les datas
 export async function fetchData(datas) {
@@ -12,20 +12,20 @@ export async function fetchData(datas) {
 
 // Fct pour déterminer le type d'erreur
 function errorMsg(error) {
-	let errorMSG = ""
-	if (error.message === "No data found") {
-		errorMSG = "Oops.. Aucun projet trouvé"
-	} else if (error.message === "Error connecting to database") {
-		errorMSG = "Oops.. Une erreur technique est survenue"
-	} else console.log("Error message:", error.message)
+	let errorMSG = ''
+	if (error.message === 'No data found') {
+		errorMSG = 'Oops.. Aucun projet trouvé'
+	} else if (error.message === 'Error connecting to database') {
+		errorMSG = 'Oops.. Une erreur technique est survenue'
+	} else console.log('Error message:', error.message)
 
 	return createErrorMsg(errorMSG)
 }
 
 // Fct pour créer le message d'erreur côté front/client
 function createErrorMsg(err) {
-	const galleryContainer = document.querySelector(".gallery")
-	const existingErrorMsg = galleryContainer.querySelector(".error-message")
+	const galleryContainer = document.querySelector('.gallery')
+	const existingErrorMsg = galleryContainer.querySelector('.error-message')
 
 	if (existingErrorMsg) {
 		if (existingErrorMsg.innerText === err) {
@@ -34,9 +34,9 @@ function createErrorMsg(err) {
 		}
 	}
 
-	const errorDiv = document.createElement("div")
+	const errorDiv = document.createElement('div')
 	errorDiv.innerText = err
-	errorDiv.className = "error-message"
+	errorDiv.className = 'error-message'
 	galleryContainer.appendChild(errorDiv)
 
 	return galleryContainer
@@ -44,14 +44,13 @@ function createErrorMsg(err) {
 
 // Fct pour générer la gallerie
 function createGallery(categoriesDB, projectDB) {
-	const cat = ["Tous", ...categoriesDB] //nvx tableau avec l'ajout du bouton "Tous"
+	const cat = ['Tous', ...categoriesDB] //nvx tableau avec l'ajout du bouton "Tous"
 
-	//association + création des éléments globaux du DOM
-	const galleryContainer = document.querySelector(".gallery")
-	const filters = document.createElement("div")
-	filters.className = "filters" //ajoute une classe à la div "filters"
-	const figure = document.createElement("figure")
-	figure.className = "figure"
+	const galleryContainer = document.querySelector('.gallery')
+	const filters = document.createElement('div')
+	filters.id = 'filters'
+	const figure = document.createElement('figure')
+	figure.className = 'figure'
 
 	galleryContainer.appendChild(filters)
 	galleryContainer.appendChild(figure)
@@ -61,13 +60,13 @@ function createGallery(categoriesDB, projectDB) {
 
 	projectDB.forEach((project) => {
 		//création des éléments (DOM) avec les datas reçues
-		const projectContainer = document.createElement("div")
-		projectContainer.className = "project-container"
+		const projectContainer = document.createElement('div')
+		projectContainer.className = 'project-container'
 		projectContainer.dataset.category = project.category.name //stock dans l'attribut data la catégorie du projet
-		const picture = document.createElement("img")
-		picture.setAttribute("src", project.imageUrl)
-		picture.setAttribute("alt", project.alt)
-		const subtitle = document.createElement("figcaption")
+		const picture = document.createElement('img')
+		picture.setAttribute('src', project.imageUrl)
+		picture.setAttribute('alt', project.alt)
+		const subtitle = document.createElement('figcaption')
 		subtitle.textContent = project.title
 
 		//association des éléments enfants aux éléments parents du DOM
@@ -81,18 +80,18 @@ function createGallery(categoriesDB, projectDB) {
 	// Création des boutons
 	cat.forEach((nameCat) => {
 		//création du btn (DOM)
-		const btnCategory = document.createElement("button")
-		btnCategory.type = "button"
+		const btnCategory = document.createElement('button')
+		btnCategory.type = 'button'
 		btnCategory.innerText =
-			nameCat === "Hotels & restaurants" ? "Hôtels & restaurants" : nameCat
-		btnCategory.className = "btn-filters"
+			nameCat === 'Hotels & restaurants' ? 'Hôtels & restaurants' : nameCat
+		btnCategory.className = 'btn-filters'
 
 		// Création du filtre au clic en fonction des catégories
-		btnCategory.addEventListener("click", () => {
+		btnCategory.addEventListener('click', () => {
 			// Afficher tous les projets si le bouton "Tous" est cliqué
-			if (nameCat === "Tous") {
+			if (nameCat === 'Tous') {
 				projectsDiv.forEach((el) => {
-					el.style.display = "block"
+					el.style.display = 'block'
 				})
 			} else {
 				// Filtrer les projets par catégorie
@@ -100,9 +99,9 @@ function createGallery(categoriesDB, projectDB) {
 					const projectCatName = el.dataset.category
 
 					if (nameCat !== projectCatName) {
-						el.style.display = "none"
+						el.style.display = 'none'
 					} else {
-						el.style.display = "block"
+						el.style.display = 'block'
 					}
 				})
 			}
@@ -123,19 +122,19 @@ async function displayProjects() {
 displayProjects() //appel de la fct
 
 // Récupération du token et affichage de l'edit bar
-const editBar = document.getElementById("edit-bar")
-const token = localStorage.getItem("Token")
+const editBar = document.getElementById('edit-bar')
+const token = localStorage.getItem('Token')
 
-const login = document.getElementById("login")
-const logout = document.getElementById("logout")
+const login = document.getElementById('login')
+const logout = document.getElementById('logout')
 
-logout.addEventListener("click", () => {
-	localStorage.removeItem("Token")
+logout.addEventListener('click', () => {
+	localStorage.removeItem('Token')
 	location.reload()
 })
 
 if (token) {
-	editBar.style.display = "flex" //affiche l'edit-bar sur la home page
-	login.style.display = "none"
-	logout.style.display = "unset"
+	editBar.style.display = 'flex' //affiche l'edit-bar sur la home page
+	login.style.display = 'none'
+	logout.style.display = 'unset'
 }

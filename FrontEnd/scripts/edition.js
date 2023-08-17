@@ -32,12 +32,15 @@ const content = document.getElementById('content')
 const modalBtn = document.getElementById('btn-modal')
 const deleteGalleryBtn = document.getElementById('delete-all')
 const line = document.getElementById('line')
+const projectsBtn = document.getElementById('filters')
 
 //Génère le style d'édition
 function generateEditMode() {
 	h2Intro.style.marginTop = '35px'
 	h2Projects.style.marginRight = '31px'
+	h2Projects.style.marginBottom = '92px'
 	profilPicture.style.marginBottom = '13px'
+	projectsBtn.style.display = 'none'
 
 	for (const editContainer of editContainers) {
 		editContainer.style.display = 'flex'
@@ -108,10 +111,12 @@ function openModalHandler() {
 	modal.style.display = 'block'
 	body.style.overflow = 'hidden'
 }
-function closeModalHandler() {
+function closeModalHandler(e) {
+	e.preventDefault()
 	modal.style.display = 'none'
 	body.style.overflow = 'unset'
-	modalContent.innerHTML = ''
+
+	initialStyle()
 }
 
 //Ajout des écouteurs d'événements "click"
@@ -199,12 +204,12 @@ function generateProjectForm() {
 	inputTitle.name = 'Titre'
 	inputTitle.className = 'title'
 	const titleLabel = document.createElement('label')
-	titleLabel.innerHTML = 'Titre'
+	titleLabel.innerHTML = 'Titre *'
 	titleLabel.setAttribute('for', 'title')
 
 	const selectCategory = document.createElement('select')
 	const categoryLabel = document.createElement('label')
-	categoryLabel.innerHTML = 'Catégorie'
+	categoryLabel.innerHTML = 'Catégorie *'
 	categoryLabel.setAttribute('for', 'category')
 	const opt = ['', ...categories]
 	selectCategory.name = 'Catégorie'
@@ -253,15 +258,23 @@ function generateProjectForm() {
 
 		//Gère l'envoi du formulaire d'ajout de nvx projet
 		function checkFormValidity() {
-			const selectedOpt = selectCategory.selectedIndex
 			const imageLoaded = inputImg.files[0]
+			const selectedOpt = selectCategory.selectedIndex
 
 			if (selectedOpt !== 0 && imageLoaded && inputTitle.value.trim() !== '') {
 				modalBtn.disabled = false
+				inputTitle.style.outlineColor = null
+				selectCategory.style.outlineColor = null
 
 				modalBtn.addEventListener('click', async () => {
 					await addProject()
 				})
+			} else if (selectedOpt === 0) {
+				selectCategory.style.outlineColor = '#d65353'
+				console.error('Veuillez sélectionner une catégorie')
+			} else if (inputTitle.value.trim() === '') {
+				inputTitle.style.outlineColor = '#d65353'
+				console.error('Veuillez donner un titre à votre photo')
 			} else {
 				modalBtn.disabled = true
 			}
@@ -289,6 +302,8 @@ function generateProjectForm() {
 
 	//Ajouter un nvx projet
 	async function addProject() {
+		const selectedOpt = selectCategory.selectedIndex
+
 		if (selectedOpt === 0) {
 			console.log('Veuillez sélectionner une catégorie')
 			return
@@ -369,19 +384,19 @@ function generateAlert() {
 	})
 
 	btnNo.addEventListener('click', (e) => {
+		e.preventDefault()
+
 		document.querySelector('h3').style.display = 'unset'
 		line.style.display = 'unset'
 		content.style.display = 'flex'
 		content.style.flexDirection = 'row'
 		content.style.flexWrap = 'wrap'
 
-		initialStyle(e)
+		initialStyle()
 	})
 }
 
-function initialStyle(e) {
-	e.preventDefault()
-
+function initialStyle() {
 	//remise du style par default
 	modalContent.innerHTML = ''
 	previousBtn.style.display = 'none'
