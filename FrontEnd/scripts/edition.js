@@ -136,12 +136,13 @@ bgModal.addEventListener('mousedown', (e) => {
 function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires
 	document.querySelector('h3').innerHTML = 'Ajout photo'
-	line.style.marginBottom = '75px'
+	line.style.marginBottom = '115px'
 	btnModal.innerHTML = 'Valider'
 	btnModal.setAttribute('type', 'submit')
 	btnModal.style.position = 'fixed'
-	btnModal.style.bottom = '28px'
+	btnModal.style.bottom = '25px'
 	btnModal.style.left = '195px'
+	btnModal.disabled = true
 	deleteGalleryBtn.remove()
 
 	//création des éléments (DOM)
@@ -243,17 +244,45 @@ function generateProjectForm() {
 		})
 	}
 
+	const selectedOpt = selectCategory.selectedIndex
+
 	//Gère l'envoi du formulaire d'ajout de nvx projet
-	if (projectForm) {
-		btnModal.addEventListener('click', async () => {
-			await addProject()
-		})
+	function checkFormValidity() {
+		const selectedOpt = selectCategory.selectedIndex
+		const imageLoaded = inputImg.files[0]
+
+		if (selectedOpt !== 0 && imageLoaded && inputTitle.value.trim() !== '') {
+			btnModal.disabled = false
+
+			btnModal.addEventListener('click', async () => {
+				await addProject()
+			})
+		} else {
+			btnModal.disabled = true
+		}
 	}
+
+	inputImg.addEventListener('change', (event) => {
+		const imageLoaded = event.target.files[0]
+
+		if (imageLoaded) {
+			generatePicturePreview(imageLoaded)
+		}
+		checkFormValidity()
+	})
+
+	inputTitle.addEventListener('input', () => {
+		checkFormValidity()
+	})
+
+	selectCategory.addEventListener('change', () => {
+		checkFormValidity()
+	})
+
+	checkFormValidity()
 
 	//Ajouter un nvx projet
 	async function addProject() {
-		const selectedOpt = selectCategory.selectedIndex
-
 		if (selectedOpt === 0) {
 			console.log('Veuillez sélectionner une catégorie')
 			return
@@ -287,32 +316,58 @@ function generateProjectForm() {
 //Confirmation de la suppression de tous les projets
 function generateAlert() {
 	modalContent.innerHTML = ''
-	line.remove()
-	btnModal.remove()
-	deleteGalleryBtn.remove()
-	document.querySelector('h3').remove()
+	line.style.display = 'none'
+	btnModal.style.display = 'none'
+	deleteGalleryBtn.style.display = 'none'
+	document.querySelector('h3').style.display = 'none'
 
 	modal.style.backgroundColor = '#d65353'
 	modal.style.padding = '8px 25px'
 	content.style.flexDirection = 'column'
 	modalContainer.style.margin = 'margin: 0 70px 20px 70px;'
 
+	const alertIcone = document.createElement('i')
+	alertIcone.className = 'fa-solid fa-triangle-exclamation fa-xl'
+	alertIcone.style.color = '#d65353'
+	alertIcone.style.paddingTop = '38px'
+	alertIcone.style.paddingBottom = '18px'
+
+	const btnContainer = document.createElement('div')
+	btnContainer.className = 'btn-container'
+
 	const confirm = document.createElement('div')
 	confirm.className = 'alert'
 	confirm.innerHTML =
 		'Êtes-vous sûr de vouloir supprimer tous vos projets ? <br><br> Cette action est définitive.'
-	confirm.style.marginBottom = '30px'
+	confirm.style.marginBottom = '20px'
 
 	const btnConfirmDelete = document.createElement('div')
 	btnConfirmDelete.className = 'btn-confirm-delete'
 	btnConfirmDelete.innerHTML = 'Oui'
 
+	const btnNo = document.createElement('div')
+	btnNo.className = 'btn-no'
+	btnNo.innerHTML = 'Non'
+
+	content.appendChild(alertIcone)
 	content.appendChild(confirm)
-	content.appendChild(btnConfirmDelete)
+	content.appendChild(btnContainer)
+	btnContainer.appendChild(btnConfirmDelete)
+	btnContainer.appendChild(btnNo)
 
 	btnConfirmDelete.addEventListener('click', (e) => {
 		e.preventDefault()
 		deleteAllProjects()
 		closeModalHandler()
+	})
+
+	btnNo.addEventListener('click', (e) => {
+		e.preventDefault()
+		modalContent.innerHTML = ''
+		line.style.display = 'inline'
+		btnModal.style.display = 'inline'
+		deleteGalleryBtn.style.display = 'inline'
+		document.querySelector('h3').style.display = 'inline'
+		generatePicturesGallery()
 	})
 }
