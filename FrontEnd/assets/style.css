@@ -732,3 +732,8 @@ footer ul li {
 	position: fixed;
 	top: 25%; */
 }
+
+.error-msg {
+	color: var(--alert);
+	margin-top: 10px;
+}

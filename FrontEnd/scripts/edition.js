@@ -204,13 +204,17 @@ function generateProjectForm() {
 	inputTitle.name = 'Titre'
 	inputTitle.className = 'title'
 	const titleLabel = document.createElement('label')
-	titleLabel.innerHTML = 'Titre *'
+	titleLabel.innerHTML = 'Titre'
 	titleLabel.setAttribute('for', 'title')
+	const titleError = document.createElement('p')
+	titleError.className = 'error-msg'
 
 	const selectCategory = document.createElement('select')
 	const categoryLabel = document.createElement('label')
-	categoryLabel.innerHTML = 'Catégorie *'
+	categoryLabel.innerHTML = 'Catégorie'
 	categoryLabel.setAttribute('for', 'category')
+	const categoryError = document.createElement('p')
+	categoryError.className = 'error-msg'
 	const opt = ['', ...categories]
 	selectCategory.name = 'Catégorie'
 	selectCategory.className = 'category'
@@ -224,8 +228,10 @@ function generateProjectForm() {
 	projectForm.appendChild(containerImg)
 	projectForm.appendChild(inputTitle)
 	projectForm.insertBefore(titleLabel, inputTitle)
+	inputTitle.after(titleError)
 	projectForm.appendChild(selectCategory)
 	projectForm.insertBefore(categoryLabel, selectCategory)
+	selectCategory.after(categoryError)
 	containerImg.appendChild(imgIcone)
 	containerImg.appendChild(inputImg)
 	containerImg.insertBefore(imgLabel, inputImg)
@@ -255,50 +261,63 @@ function generateProjectForm() {
 		analyseurImg.addEventListener('load', function () {
 			previewImg.setAttribute('src', analyseurImg.result)
 		})
+	}
 
-		//Gère l'envoi du formulaire d'ajout de nvx projet
-		function checkFormValidity() {
-			const imageLoaded = inputImg.files[0]
-			const selectedOpt = selectCategory.selectedIndex
+	//Gère l'envoi du formulaire d'ajout de nvx projet
+	function checkFormValidity() {
+		const imageLoaded = inputImg.files[0]
+		const selectedOpt = selectCategory.selectedIndex
+		const title = inputTitle.value
 
-			if (selectedOpt !== 0 && imageLoaded && inputTitle.value.trim() !== '') {
-				modalBtn.disabled = false
-				inputTitle.style.outlineColor = null
-				selectCategory.style.outlineColor = null
+		if (selectedOpt !== 0 && imageLoaded && title.trim() !== '') {
+			modalBtn.disabled = false
+			categoryError.innerHTML = ''
+			titleError.innerHTML = ''
+			selectCategory.style.outlineColor = null
+			inputTitle.style.outlineColor = null
 
-				modalBtn.addEventListener('click', async () => {
-					await addProject()
-				})
-			} else if (selectedOpt === 0) {
+			//gestion des erreurs
+		} else {
+			if (selectedOpt === 0) {
 				selectCategory.style.outlineColor = '#d65353'
-				console.error('Veuillez sélectionner une catégorie')
-			} else if (inputTitle.value.trim() === '') {
-				inputTitle.style.outlineColor = '#d65353'
-				console.error('Veuillez donner un titre à votre photo')
-			} else {
+
+				categoryError.innerHTML = 'Veuillez sélectionner une catégorie'
+
 				modalBtn.disabled = true
+			} else {
+				selectCategory.style.outlineColor = null
+				categoryError.innerHTML = ''
+			}
+
+			if (inputTitle.value.trim() === '') {
+				inputTitle.style.outlineColor = '#d65353'
+
+				titleError.innerHTML = 'Veuillez choisir un titre à votre projet'
+
+				modalBtn.disabled = true
+			} else {
+				inputTitle.style.outlineColor = null
+				titleError.innerHTML = ''
 			}
 		}
-
-		inputImg.addEventListener('change', (event) => {
-			const imageLoaded = event.target.files[0]
-
-			if (imageLoaded) {
-				generatePicturePreview(imageLoaded)
-			}
-			checkFormValidity()
-		})
-
-		inputTitle.addEventListener('input', () => {
-			checkFormValidity()
-		})
-
-		selectCategory.addEventListener('change', () => {
-			checkFormValidity()
-		})
-
-		checkFormValidity()
 	}
+
+	inputImg.addEventListener('change', (event) => {
+		const imageLoaded = event.target.files[0]
+
+		if (imageLoaded) {
+			generatePicturePreview(imageLoaded)
+		}
+		checkFormValidity()
+	})
+
+	inputTitle.addEventListener('keyup', () => {
+		checkFormValidity()
+	})
+
+	selectCategory.addEventListener('change', () => {
+		checkFormValidity()
+	})
 
 	//Ajouter un nvx projet
 	async function addProject() {
@@ -333,6 +352,8 @@ function generateProjectForm() {
 			console.error(error.message)
 		}
 	}
+
+	modalBtn.addEventListener('click', addProject) // Ajoute l'événement "click" une fois le formulaire validé
 }
 
 //Confirmation de la suppression de tous les projets
