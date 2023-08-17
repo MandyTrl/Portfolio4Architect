@@ -27,8 +27,9 @@ const modalContent = document.getElementById('content')
 const modalContainer = document.getElementById('modal-container')
 const closeBtn = document.getElementById('close-modal')
 const openModal = document.getElementById('open-modal')
+const previousBtn = document.getElementById('previous')
 const content = document.getElementById('content')
-const btnModal = document.getElementById('btn-modal')
+const modalBtn = document.getElementById('btn-modal')
 const deleteGalleryBtn = document.getElementById('delete-all')
 const line = document.getElementById('line')
 
@@ -110,13 +111,18 @@ function openModalHandler() {
 function closeModalHandler() {
 	modal.style.display = 'none'
 	body.style.overflow = 'unset'
+	modalContent.innerHTML = ''
 }
 
 //Ajout des écouteurs d'événements "click"
 openModal.addEventListener('click', openModalHandler)
 closeBtn.addEventListener('click', closeModalHandler)
 deleteGalleryBtn.addEventListener('click', generateAlert)
-btnModal.addEventListener('click', (e) => {
+previousBtn.addEventListener('click', (e) => {
+	initialStyle(e)
+})
+
+modalBtn.addEventListener('click', (e) => {
 	e.preventDefault()
 	modalContent.innerHTML = ''
 	generateProjectForm()
@@ -135,15 +141,17 @@ bgModal.addEventListener('mousedown', (e) => {
 //Génère le formulaire
 function generateProjectForm() {
 	//modifie/mets à jour les éléments (DOM) nécessaires
+	modalBtn.disabled = false
 	document.querySelector('h3').innerHTML = 'Ajout photo'
-	line.style.marginBottom = '115px'
-	btnModal.innerHTML = 'Valider'
-	btnModal.setAttribute('type', 'submit')
-	btnModal.style.position = 'fixed'
-	btnModal.style.bottom = '25px'
-	btnModal.style.left = '195px'
-	btnModal.disabled = true
-	deleteGalleryBtn.remove()
+	previousBtn.style.display = 'unset'
+	deleteGalleryBtn.style.display = 'none'
+	line.style.marginBottom = '135px'
+	modalBtn.innerHTML = 'Valider'
+	modalBtn.setAttribute('type', 'submit')
+	modalBtn.style.position = 'fixed'
+	modalBtn.style.bottom = '40px'
+	modalBtn.style.left = '195px'
+	modalBtn.disabled = true
 
 	//création des éléments (DOM)
 	const projectForm = document.createElement('form')
@@ -207,7 +215,7 @@ function generateProjectForm() {
 
 	//association des éléments enfants aux éléments parents du DOM
 	modalContent.appendChild(projectForm)
-	projectForm.appendChild(btnModal)
+	projectForm.appendChild(modalBtn)
 	projectForm.appendChild(containerImg)
 	projectForm.appendChild(inputTitle)
 	projectForm.insertBefore(titleLabel, inputTitle)
@@ -242,44 +250,42 @@ function generateProjectForm() {
 		analyseurImg.addEventListener('load', function () {
 			previewImg.setAttribute('src', analyseurImg.result)
 		})
-	}
 
-	const selectedOpt = selectCategory.selectedIndex
+		//Gère l'envoi du formulaire d'ajout de nvx projet
+		function checkFormValidity() {
+			const selectedOpt = selectCategory.selectedIndex
+			const imageLoaded = inputImg.files[0]
 
-	//Gère l'envoi du formulaire d'ajout de nvx projet
-	function checkFormValidity() {
-		const selectedOpt = selectCategory.selectedIndex
-		const imageLoaded = inputImg.files[0]
+			if (selectedOpt !== 0 && imageLoaded && inputTitle.value.trim() !== '') {
+				modalBtn.disabled = false
 
-		if (selectedOpt !== 0 && imageLoaded && inputTitle.value.trim() !== '') {
-			btnModal.disabled = false
-
-			btnModal.addEventListener('click', async () => {
-				await addProject()
-			})
-		} else {
-			btnModal.disabled = true
+				modalBtn.addEventListener('click', async () => {
+					await addProject()
+				})
+			} else {
+				modalBtn.disabled = true
+			}
 		}
+
+		inputImg.addEventListener('change', (event) => {
+			const imageLoaded = event.target.files[0]
+
+			if (imageLoaded) {
+				generatePicturePreview(imageLoaded)
+			}
+			checkFormValidity()
+		})
+
+		inputTitle.addEventListener('input', () => {
+			checkFormValidity()
+		})
+
+		selectCategory.addEventListener('change', () => {
+			checkFormValidity()
+		})
+
+		checkFormValidity()
 	}
-
-	inputImg.addEventListener('change', (event) => {
-		const imageLoaded = event.target.files[0]
-
-		if (imageLoaded) {
-			generatePicturePreview(imageLoaded)
-		}
-		checkFormValidity()
-	})
-
-	inputTitle.addEventListener('input', () => {
-		checkFormValidity()
-	})
-
-	selectCategory.addEventListener('change', () => {
-		checkFormValidity()
-	})
-
-	checkFormValidity()
 
 	//Ajouter un nvx projet
 	async function addProject() {
@@ -306,6 +312,7 @@ function generateProjectForm() {
 				throw new Error('Error add new project')
 			} else {
 				console.log('Project successfully added !')
+				selectCategory.selectedIndex = 0
 			}
 		} catch (error) {
 			console.error(error.message)
@@ -317,7 +324,7 @@ function generateProjectForm() {
 function generateAlert() {
 	modalContent.innerHTML = ''
 	line.style.display = 'none'
-	btnModal.style.display = 'none'
+	modalBtn.style.display = 'none'
 	deleteGalleryBtn.style.display = 'none'
 	document.querySelector('h3').style.display = 'none'
 
@@ -362,12 +369,34 @@ function generateAlert() {
 	})
 
 	btnNo.addEventListener('click', (e) => {
-		e.preventDefault()
-		modalContent.innerHTML = ''
-		line.style.display = 'inline'
-		btnModal.style.display = 'inline'
-		deleteGalleryBtn.style.display = 'inline'
-		document.querySelector('h3').style.display = 'inline'
-		generatePicturesGallery()
+		document.querySelector('h3').style.display = 'unset'
+		line.style.display = 'unset'
+		content.style.display = 'flex'
+		content.style.flexDirection = 'row'
+		content.style.flexWrap = 'wrap'
+
+		initialStyle(e)
 	})
+}
+
+function initialStyle(e) {
+	e.preventDefault()
+
+	//remise du style par default
+	modalContent.innerHTML = ''
+	previousBtn.style.display = 'none'
+	deleteGalleryBtn.style.display = 'unset'
+	modalBtn.disabled = false
+	modalBtn.style.display = 'unset'
+	modalBtn.innerHTML = 'Ajouter une photo'
+	modalBtn.removeAttribute('type', 'submit')
+	modalBtn.style.position = null
+	modalBtn.style.bottom = null
+	modalBtn.style.left = null
+	line.style.marginBottom = '37px'
+
+	modalContainer.appendChild(modalBtn)
+	modalContainer.insertBefore(modalBtn, deleteGalleryBtn)
+
+	generatePicturesGallery()
 }

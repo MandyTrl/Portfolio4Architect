@@ -582,8 +582,14 @@ input[type='submit']:active,
 	border: none;
 }
 
-.close-icone {
-	color: #000000;
+#previous {
+	display: none;
+	width: 24px;
+	position: absolute;
+	top: 26px;
+	left: 30px;
+	background-color: transparent;
+	border: none;
 }
 
 .close-icone:hover,
