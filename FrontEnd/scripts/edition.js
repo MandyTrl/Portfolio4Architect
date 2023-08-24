@@ -13,8 +13,6 @@ const pictures = projects.map((el) => {
 	}
 })
 
-const token = localStorage.getItem('Token')
-
 //récupération des éléments du DOM
 const body = document.body
 const h2Intro = document.querySelector('#introduction h2')
@@ -33,6 +31,13 @@ const modalBtn = document.getElementById('btn-modal')
 const deleteGalleryBtn = document.getElementById('delete-all')
 const line = document.getElementById('line')
 const projectsBtn = document.getElementById('filters')
+const reloadBtn = document.getElementById('edit-btn')
+
+const token = localStorage.getItem('Token')
+
+if (token) {
+	generateEditMode()
+}
 
 //Génère le style d'édition
 function generateEditMode() {
@@ -47,8 +52,16 @@ function generateEditMode() {
 	}
 }
 
-if (token) {
-	generateEditMode()
+//Display de la modal
+function openModalHandler() {
+	modal.style.display = 'block'
+	body.style.overflow = 'hidden'
+}
+function closeModalHandler() {
+	modal.style.display = 'none'
+	body.style.overflow = 'unset'
+
+	initialStyle()
 }
 
 //Génère la galerie d'images
@@ -80,8 +93,15 @@ function generatePicturesGallery() {
 		containerIconeM.style.display = 'none'
 		const containerIconeT = document.createElement('div')
 		containerIconeT.className = 'container-iconeT'
-		containerIconeT.addEventListener('click', (e) => {
-			deleteProject(e, img.id)
+		containerIconeT.addEventListener('click', () => {
+			deleteProject(img.id)
+			const projectIndex = pictures.findIndex(
+				(project) => project.id === img.id
+			)
+			if (projectIndex !== -1) {
+				pictures.splice(projectIndex, 1)
+			}
+			containerIconeT.parentNode.parentNode.remove()
 		})
 
 		const moveIcone = document.createElement('i')
@@ -101,41 +121,24 @@ function generatePicturesGallery() {
 		containerIcones.appendChild(containerIconeT)
 		containerIconeM.appendChild(moveIcone)
 		containerIconeT.appendChild(trashIcone)
+
+		modalBtn.addEventListener('click', generateProjectForm) //génére le formulaire d'ajout de projet
+		deleteGalleryBtn.addEventListener('click', generateAlert) //génération d'alerte pour supprimer tte la galerie
 	})
 }
 
 generatePicturesGallery()
 
-//Display de la modal
-function openModalHandler() {
-	modal.style.display = 'block'
-	body.style.overflow = 'hidden'
-}
-function closeModalHandler(e) {
-	e.preventDefault()
-	modal.style.display = 'none'
-	body.style.overflow = 'unset'
-
-	initialStyle()
-}
-
 //Ajout des écouteurs d'événements "click"
-openModal.addEventListener('click', openModalHandler)
-closeBtn.addEventListener('click', closeModalHandler)
-deleteGalleryBtn.addEventListener('click', generateAlert)
-previousBtn.addEventListener('click', (e) => {
-	initialStyle(e)
-})
-
-modalBtn.addEventListener('click', (e) => {
-	e.preventDefault()
-	modalContent.innerHTML = ''
-	generateProjectForm()
+openModal.addEventListener('click', openModalHandler) //ouverture de la modal
+closeBtn.addEventListener('click', closeModalHandler) //fermeture de la modal via le bouton X de la modal
+reloadBtn.addEventListener('click', () => {
+	location.reload()
 })
 
 //Ferme la modal qd le clic se fait en-dehors de celle-ci
-bgModal.addEventListener('mousedown', (e) => {
-	const targetElement = e.target
+bgModal.addEventListener('mousedown', (event) => {
+	const targetElement = event.target
 	const isInsideModal = modalContainer.contains(targetElement) //check si le user click dans la modal
 
 	if (!isInsideModal && targetElement !== openModal) {
@@ -144,9 +147,9 @@ bgModal.addEventListener('mousedown', (e) => {
 })
 
 //Génère le formulaire
-function generateProjectForm() {
-	//modifie/mets à jour les éléments (DOM) nécessaires
-	modalBtn.disabled = false
+function generateProjectForm(event) {
+	//mets à jour les éléments (DOM) nécessaires
+	modalContent.innerHTML = ''
 	document.querySelector('h3').innerHTML = 'Ajout photo'
 	previousBtn.style.display = 'unset'
 	deleteGalleryBtn.style.display = 'none'
@@ -157,6 +160,8 @@ function generateProjectForm() {
 	modalBtn.style.bottom = '40px'
 	modalBtn.style.left = '195px'
 	modalBtn.disabled = true
+
+	modalBtn.removeEventListener('click', generateProjectForm)
 
 	//création des éléments (DOM)
 	const projectForm = document.createElement('form')
@@ -276,6 +281,12 @@ function generateProjectForm() {
 			selectCategory.style.outlineColor = null
 			inputTitle.style.outlineColor = null
 
+			//gère l'envoi du formulaire
+			modalBtn.addEventListener('click', (event) => {
+				addProject()
+				event.preventDefault()
+			})
+
 			//gestion des erreurs
 		} else {
 			if (selectedOpt === 0) {
@@ -322,6 +333,7 @@ function generateProjectForm() {
 	//Ajouter un nvx projet
 	async function addProject() {
 		const selectedOpt = selectCategory.selectedIndex
+		selectCategory.selectedIndex = 0
 
 		if (selectedOpt === 0) {
 			console.log('Veuillez sélectionner une catégorie')
@@ -345,15 +357,22 @@ function generateProjectForm() {
 			if (!response.ok) {
 				throw new Error('Error add new project')
 			} else {
+				const newProjectData = await response.json() // Supposons que le backend renvoie les données du nouveau projet
+				pictures.push({
+					id: newProjectData.id,
+					url: newProjectData.imageUrl,
+				})
+				generatePicturesGallery() // Actualiser la galerie d'images
+				initialStyle()
 				console.log('Project successfully added !')
-				selectCategory.selectedIndex = 0
 			}
 		} catch (error) {
 			console.error(error.message)
 		}
 	}
 
-	modalBtn.addEventListener('click', addProject) // Ajoute l'événement "click" une fois le formulaire validé
+	//Gestion du retour en arrière
+	previousBtn.addEventListener('click', initialStyle)
 }
 
 //Confirmation de la suppression de tous les projets
@@ -398,21 +417,19 @@ function generateAlert() {
 	btnContainer.appendChild(btnConfirmDelete)
 	btnContainer.appendChild(btnNo)
 
-	btnConfirmDelete.addEventListener('click', (e) => {
-		e.preventDefault()
+	btnConfirmDelete.addEventListener('click', () => {
 		deleteAllProjects()
 		closeModalHandler()
 	})
 
-	btnNo.addEventListener('click', (e) => {
-		e.preventDefault()
-
+	btnNo.addEventListener('click', (event) => {
 		document.querySelector('h3').style.display = 'unset'
 		line.style.display = 'unset'
 		content.style.display = 'flex'
 		content.style.flexDirection = 'row'
 		content.style.flexWrap = 'wrap'
 
+		event.preventDefault()
 		initialStyle()
 	})
 }
@@ -435,4 +452,9 @@ function initialStyle() {
 	modalContainer.insertBefore(modalBtn, deleteGalleryBtn)
 
 	generatePicturesGallery()
+
+	modalBtn.addEventListener('click', (event) => {
+		event.preventDefault()
+		generateProjectForm()
+	}) //génére le formulaire d'ajout de projet
 }

@@ -1,23 +1,22 @@
-import { projectsApiUrl } from "./links.js"
+import { projectsApiUrl } from './links.js'
 
-const token = localStorage.getItem("Token")
+const token = localStorage.getItem('Token')
 
 //Supprimer un projet
-export async function deleteProject(e, id) {
-	e.preventDefault()
+export async function deleteProject(id) {
 	try {
 		const response = await fetch(`${projectsApiUrl}/${id}`, {
-			method: "DELETE",
+			method: 'DELETE',
 			headers: {
-				"Content-Type": "application/json",
+				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
 			},
 		})
 
 		if (!response.ok) {
-			throw new Error("Error deleting project")
+			throw new Error('Error deleting project')
 		} else {
-			console.log("Project successfully deleted !")
+			console.log('Project successfully deleted !')
 		}
 	} catch (error) {
 		console.error(error.message)
@@ -28,17 +27,18 @@ export async function deleteProject(e, id) {
 export async function deleteAllProjects() {
 	try {
 		const response = await fetch(`${projectsApiUrl}/all`, {
-			method: "DELETE",
+			method: 'DELETE',
 			headers: {
-				"Content-Type": "application/json",
+				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`, //envoi du token à l'appel de la route pr (accès autorisé)
 			},
 		})
 
 		if (!response.ok) {
-			throw new Error("Error deleting projects")
+			throw new Error('Error deleting projects')
 		} else {
-			console.log("Projects successfully deleted !")
+			console.log('Projects successfully deleted !')
+			createErrorMsg()
 		}
 	} catch (error) {
 		console.error(error.message)
