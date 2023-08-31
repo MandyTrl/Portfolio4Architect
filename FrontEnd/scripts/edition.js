@@ -1,4 +1,4 @@
-import { fetchData } from './projects.js'
+import { createGallery, fetchData } from './projects.js'
 import { projectsApiUrl } from './links.js'
 import { getProjects, getCategories } from './fetcher.js'
 import { deleteProject, deleteAllProjects } from './deleteProjects.js'
@@ -32,6 +32,7 @@ const deleteGalleryBtn = document.getElementById('delete-all')
 const line = document.getElementById('line')
 const projectsBtn = document.getElementById('filters')
 const reloadBtn = document.getElementById('edit-btn')
+const figure = document.querySelector('.figure')
 
 const token = localStorage.getItem('Token')
 
@@ -69,7 +70,8 @@ function generatePicturesGallery() {
 	pictures.forEach((img) => {
 		//création des éléments (DOM) avec les datas reçues
 		const pictureContainer = document.createElement('div')
-		pictureContainer.className = 'picture-container'
+		pictureContainer.className = 'picture-container-picture-'
+		pictureContainer.id = `${img.id}`
 
 		//display de l'icône "move" au survol
 		pictureContainer.addEventListener('mouseover', () => {
@@ -95,13 +97,21 @@ function generatePicturesGallery() {
 		containerIconeT.className = 'container-iconeT'
 		containerIconeT.addEventListener('click', () => {
 			deleteProject(img.id)
+
 			const projectIndex = pictures.findIndex(
 				(project) => project.id === img.id
 			)
+
 			if (projectIndex !== -1) {
 				pictures.splice(projectIndex, 1)
 			}
 			containerIconeT.parentNode.parentNode.remove()
+
+			const projectToDelete = document.getElementById(
+				`project-container-${img.id}`
+			)
+
+			projectToDelete.remove()
 		})
 
 		const moveIcone = document.createElement('i')
@@ -241,7 +251,12 @@ function generateProjectForm(event) {
 	containerImg.appendChild(inputImg)
 	containerImg.insertBefore(imgLabel, inputImg)
 	containerImg.appendChild(spanImg)
-
+	const optGroup = document.createElement('div')
+	optGroup.id = 'options-group'
+	selectCategory.appendChild(optGroup)
+	for (const option of selectCategory.options) {
+		optGroup.appendChild(option.cloneNode(true))
+	}
 	//Génère la prévisualisation de l'img
 	function generatePicturePreview(imageLoaded) {
 		spanImg.remove()
@@ -258,7 +273,6 @@ function generateProjectForm(event) {
 		previewImg.className = 'preview-img'
 		previewImg.src = ''
 		previewImg.alt = 'preview-img'
-
 		containerImg.appendChild(previewImg)
 
 		analyseurImg.readAsDataURL(imageLoaded)
@@ -357,12 +371,28 @@ function generateProjectForm(event) {
 			if (!response.ok) {
 				throw new Error('Error add new project')
 			} else {
-				const newProjectData = await response.json() // Supposons que le backend renvoie les données du nouveau projet
+				const newProjectData = await response.json()
 				pictures.push({
 					id: newProjectData.id,
 					url: newProjectData.imageUrl,
 				})
-				generatePicturesGallery() // Actualiser la galerie d'images
+				generatePicturesGallery() //
+
+				const projectContainer = document.createElement('div')
+				projectContainer.id = `project-container-${newProjectData.id}`
+				projectContainer.dataset.category = selectedOpt
+
+				const picture = document.createElement('img')
+				picture.setAttribute('src', `${newProjectData.imageUrl}`)
+
+				picture.setAttribute('alt', inputTitle.value)
+				const subtitle = document.createElement('figcaption')
+				subtitle.textContent = inputTitle.value
+
+				projectContainer.appendChild(picture)
+				projectContainer.appendChild(subtitle)
+				figure.appendChild(projectContainer)
+
 				initialStyle()
 				console.log('Project successfully added !')
 			}
@@ -443,6 +473,7 @@ function initialStyle() {
 	modalBtn.style.display = 'unset'
 	modalBtn.innerHTML = 'Ajouter une photo'
 	modalBtn.removeAttribute('type', 'submit')
+
 	modalBtn.style.position = null
 	modalBtn.style.bottom = null
 	modalBtn.style.left = null

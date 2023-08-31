@@ -412,6 +412,12 @@ input[type='submit'],
 
 #btn-modal:disabled {
 	background-color: #b3b3b3;
+	cursor: default;
+}
+
+#btn-modal:disabled:hover,
+#btn-modal:disabled:active {
+	background-color: #b3b3b3;
 }
 
 input[type='submit']:hover,
@@ -498,14 +504,14 @@ input[type='submit']:active,
 	flex-wrap: wrap;
 }
 
-.picture-container {
+.picture-container-picture- {
 	display: flex;
 	flex-direction: column;
 	position: relative;
 	padding: 12px 4px;
 }
 
-.picture-container img {
+.picture-container-picture- img {
 	width: 76px;
 	height: 102px;
 }
@@ -610,6 +616,20 @@ input[type='submit']:active,
 	filter: drop-shadow(0 4px 14px rgb(0, 0, 0, 9%));
 	cursor: pointer;
 	padding: 0 15px;
+}
+
+.project-form select {
+	appearance: none;
+	background-image: url('./icons/down-arrow.png');
+	background-repeat: no-repeat;
+	background-position-x: 382px;
+	background-position-y: center;
+	background-size: 22px;
+}
+
+select option {
+	background-color: #fffef8 !important;
+	width: fit-content;
 }
 
 .project-form label {

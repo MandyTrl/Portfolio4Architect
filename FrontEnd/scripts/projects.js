@@ -43,7 +43,7 @@ function createErrorMsg(err) {
 }
 
 // Fct pour générer la gallerie
-function createGallery(categoriesDB, projectDB) {
+export function createGallery(categoriesDB, projectDB) {
 	const cat = ['Tous', ...categoriesDB] //nvx tableau avec l'ajout du bouton "Tous"
 
 	const galleryContainer = document.querySelector('.gallery')
@@ -61,7 +61,7 @@ function createGallery(categoriesDB, projectDB) {
 	projectDB.forEach((project) => {
 		//création des éléments (DOM) avec les datas reçues
 		const projectContainer = document.createElement('div')
-		projectContainer.className = 'project-container'
+		projectContainer.id = `project-container-${project.id}`
 		projectContainer.dataset.category = project.category.name //stock dans l'attribut data la catégorie du projet
 		const picture = document.createElement('img')
 		picture.setAttribute('src', project.imageUrl)
